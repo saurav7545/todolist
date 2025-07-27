@@ -180,15 +180,20 @@
     // Error handling for debugging
     window.addEventListener('error', function (e) {
       console.error('Script error:', e.error);
+      document.body.innerHTML += '<div style="color: red; padding: 20px;">Error: ' + e.error + '</div>';
     });
 
     // Check if script loaded
     window.addEventListener('load', function () {
       console.log('Page loaded successfully');
+      document.body.innerHTML += '<div style="color: green; padding: 20px;">Page loaded successfully!</div>';
+
       if (typeof addTask === 'function') {
         console.log('JavaScript functions loaded');
+        document.body.innerHTML += '<div style="color: green; padding: 20px;">JavaScript functions loaded!</div>';
       } else {
         console.error('JavaScript functions not loaded');
+        document.body.innerHTML += '<div style="color: red; padding: 20px;">JavaScript functions not loaded!</div>';
       }
     });
   </script>
