@@ -2,6 +2,8 @@
 
 A modern and responsive todo list application built with HTML, CSS, and JavaScript.
 
+**Last Updated:** $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
+
 ## Features
 
 - Add, edit, and delete todo items
