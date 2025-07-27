@@ -29,7 +29,10 @@ function setupEventListeners() {
   });
 
   // Logout
-  document.getElementById('logoutBtn').addEventListener('click', logout);
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', logout);
+  }
 
   // Add notice
   document.getElementById('addNoticeBtn').addEventListener('click', () => openModal('noticeModal'));
