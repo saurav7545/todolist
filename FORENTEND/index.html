@@ -176,6 +176,22 @@
   </div>
 
   <script src="script.js"></script>
+  <script>
+    // Error handling for debugging
+    window.addEventListener('error', function (e) {
+      console.error('Script error:', e.error);
+    });
+
+    // Check if script loaded
+    window.addEventListener('load', function () {
+      console.log('Page loaded successfully');
+      if (typeof addTask === 'function') {
+        console.log('JavaScript functions loaded');
+      } else {
+        console.error('JavaScript functions not loaded');
+      }
+    });
+  </script>
 </body>
 
 </html>
