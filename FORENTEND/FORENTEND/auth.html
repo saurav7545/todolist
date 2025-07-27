@@ -119,8 +119,17 @@
     <span class="toggle-link" id="toggle-link">Already have an account? Login</span>
   </div>
   <script type="module">
-    import { auth } from './firebase.js';
+    import { auth, db } from './firebase.js';
     import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    // Simple encryption (for demo, use a better method in production)
+    function encrypt(text) {
+      return btoa(unescape(encodeURIComponent(text)));
+    }
+    function decrypt(text) {
+      return decodeURIComponent(escape(atob(text)));
+    }
 
     const signupForm = document.getElementById('signup-form');
     const loginForm = document.getElementById('login-form');
@@ -151,8 +160,14 @@
       const password = document.getElementById('signup-password').value;
       messageDiv.innerHTML = '';
       try {
+        // Create user in Firebase Auth
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await sendEmailVerification(userCredential.user);
+        // Save encrypted username/email in Firestore
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          username: encrypt(username),
+          email: encrypt(email)
+        });
         messageDiv.innerHTML = '<div class="success">Signup successful! Please verify your email (OTP link sent).</div>';
         signupForm.reset();
       } catch (err) {
@@ -172,6 +187,13 @@
           await signOut(auth);
           return;
         }
+        // Optionally fetch and decrypt username/email
+        // const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+        // if (userDoc.exists()) {
+        //   const data = userDoc.data();
+        //   const username = decrypt(data.username);
+        //   // Use username as needed
+        // }
         messageDiv.innerHTML = '<div class="success">Login successful! Redirecting...</div>';
         setTimeout(() => {
           window.location.href = 'index.html';
