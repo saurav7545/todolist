@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📖 Personal Diary - Study Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+
+    .diary-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      min-height: 85vh;
+      padding: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .diary-header {
+      text-align: center;
+      margin-bottom: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 3.5rem;
+      font-weight: 700;
+      font-family: 'Dancing Script', cursive;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      letter-spacing: 2px;
+    }
+
+    .diary-header::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 2px;
+    }
+
+    .back-btn {
+      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .back-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .back-btn:hover::before {
+      left: 100%;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+    }
+
+    .date-selector {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 30px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      border: 2px solid rgba(102, 126, 234, 0.1);
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .date-selector::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .date-selector h3 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      font-weight: 700;
+      font-family: 'Poppins', sans-serif;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .date-input {
+      padding: 15px 20px;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      font-size: 16px;
+      margin-right: 15px;
+      transition: all 0.3s ease;
+      background: white;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .date-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .load-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .load-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .diary-input-section {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 30px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      border: 2px solid rgba(102, 126, 234, 0.1);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .diary-input-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    }
+
+    .diary-input-section h3 {
+      color: #e74c3c;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      font-weight: 700;
+      font-family: 'Poppins', sans-serif;
+      text-shadow: 0 2px 4px rgba(231, 76, 60, 0.1);
+    }
+
+    .diary-textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: 20px;
+      border: 2px solid #e9ecef;
+      border-radius: 15px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      resize: vertical;
+      transition: all 0.3s ease;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .diary-textarea:focus {
+      outline: none;
+      border-color: #28a745;
+      box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .diary-textarea::placeholder {
+      color: #adb5bd;
+      font-style: italic;
+    }
+
+    /* Title Input Styling */
+    .title-input-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .title-label {
+      display: block;
+      color: #495057;
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 8px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .title-input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      background: white;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      color: #2c3e50;
+    }
+
+    .title-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .title-input::placeholder {
+      color: #95a5a6;
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .title-counter {
+      position: absolute;
+      top: 45px;
+      right: 15px;
+      font-size: 12px;
+      color: #95a5a6;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #e9ecef;
+    }
+
+    /* Rich Editor Styling */
+    .rich-editor-container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      margin-bottom: 20px;
+      border: 2px solid #e9ecef;
+    }
+
+    .editor-toolbar {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-bottom: 2px solid #dee2e6;
+      padding: 10px 15px;
+    }
+
+    .toolbar-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+
+    .toolbar-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .toolbar-btn {
+      background: white;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 14px;
+      color: #495057;
+      min-width: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toolbar-btn:hover {
+      background: #e3f2fd;
+      border-color: #2196f3;
+      color: #1976d2;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(33, 150, 243, 0.2);
+    }
+
+    .toolbar-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 4px rgba(33, 150, 243, 0.2);
+    }
+
+    .separator {
+      width: 1px;
+      height: 25px;
+      background: #dee2e6;
+      margin: 0 5px;
+    }
+
+    .toolbar-select {
+      background: white;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #495057;
+      cursor: pointer;
+      min-width: 80px;
+    }
+
+    .toolbar-select:focus {
+      outline: none;
+      border-color: #2196f3;
+      box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+    }
+
+    .color-picker {
+      width: 35px;
+      height: 35px;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      cursor: pointer;
+      background: white;
+      padding: 2px;
+    }
+
+    .color-picker::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    .color-picker::-webkit-color-swatch {
+      border: none;
+      border-radius: 4px;
+    }
+
+    .rich-editor {
+      min-height: 300px;
+      padding: 20px;
+      border: none;
+      outline: none;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #2c3e50;
+      background: white;
+      overflow-y: auto;
+      max-height: 400px;
+    }
+
+    .rich-editor:empty:before {
+      content: attr(data-placeholder);
+      color: #adb5bd;
+      font-style: italic;
+      pointer-events: none;
+    }
+
+    .rich-editor:focus {
+      background: #fafbfc;
+    }
+
+    .editor-status {
+      background: #f8f9fa;
+      border-top: 1px solid #dee2e6;
+      padding: 8px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #6c757d;
+    }
+
+    .status-tag {
+      background: #e9ecef;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      color: #495057;
+    }
+
+    .word-count {
+      font-weight: 500;
+    }
+
+    .status-handle {
+      cursor: move;
+      font-size: 16px;
+      color: #adb5bd;
+      padding: 2px;
+    }
+
+    .status-handle:hover {
+      color: #6c757d;
+    }
+
+    /* Emoji Picker Styling */
+    .emoji-picker-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+
+    .emoji-picker-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow: hidden;
+      animation: emojiSlideIn 0.3s ease-out;
+    }
+
+    @keyframes emojiSlideIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    .emoji-picker-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .emoji-picker-header h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .close-emoji-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .close-emoji-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+
+    .emoji-categories {
+      display: flex;
+      padding: 15px;
+      gap: 10px;
+      border-bottom: 1px solid #e9ecef;
+      overflow-x: auto;
+      background: #f8f9fa;
+    }
+
+    .emoji-category {
+      background: white;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.2s ease;
+      min-width: 50px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .emoji-category:hover {
+      border-color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+
+    .emoji-category.active {
+      border-color: #667eea;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 8px;
+      padding: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .emoji-item {
+      background: white;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      font-size: 1.5rem;
+      text-align: center;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+    }
+
+    .emoji-item:hover {
+      border-color: #667eea;
+      background: #f8f9ff;
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+
+    .emoji-item:active {
+      transform: scale(0.95);
+    }
+
+    .diary-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .diary-btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .diary-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .diary-btn:hover::before {
+      left: 100%;
+    }
+
+    .save-btn {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .save-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .clear-btn {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    .clear-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+    }
+
+    .diary-entries {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 30px;
+      border-radius: 20px;
+      border: 2px solid rgba(102, 126, 234, 0.1);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .diary-entries::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    }
+
+    .diary-entries h3 {
+      color: #8e44ad;
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      font-weight: 700;
+      font-family: 'Poppins', sans-serif;
+      text-shadow: 0 2px 4px rgba(142, 68, 173, 0.1);
+    }
+
+    .diary-entry {
+      background: white;
+      padding: 25px;
+      margin-bottom: 20px;
+      border-radius: 15px;
+      border-left: 5px solid #28a745;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .diary-entry::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .diary-entry:hover::before {
+      opacity: 1;
+    }
+
+    .diary-entry:hover {
+      transform: translateX(8px) translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .entry-date {
+      color: #27ae60;
+      font-weight: 700;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-shadow: 0 1px 2px rgba(39, 174, 96, 0.1);
+    }
+
+    .entry-title {
+      color: #e67e22;
+      font-weight: 600;
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-shadow: 0 1px 2px rgba(230, 126, 34, 0.1);
+      padding: 8px 12px;
+      background: linear-gradient(135deg, rgba(230, 126, 34, 0.1) 0%, rgba(211, 84, 0, 0.1) 100%);
+      border-radius: 8px;
+      border-left: 3px solid #e67e22;
+    }
+
+    .entry-content {
+      color: #34495e;
+      line-height: 1.8;
+      margin-bottom: 15px;
+      white-space: pre-wrap;
+      font-size: 16px;
+      font-family: 'Poppins', sans-serif;
+      position: relative;
+      z-index: 1;
+      font-weight: 400;
+    }
+
+    .entry-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 15px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .edit-btn {
+      background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+    }
+
+    .edit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+    }
+
+    .delete-btn {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    }
+
+    .delete-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    }
+
+    .no-entries {
+      text-align: center;
+      color: #6c757d;
+      font-style: italic;
+      padding: 40px;
+      font-size: 16px;
+      font-family: 'Poppins', sans-serif;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .current-date {
+      background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+      padding: 18px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #155724;
+      font-weight: 700;
+      font-size: 18px;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 4px 15px rgba(21, 87, 36, 0.1);
+      border: 2px solid rgba(21, 87, 36, 0.2);
+      text-shadow: 0 1px 2px rgba(21, 87, 36, 0.1);
+    }
+
+    .keyboard-shortcut {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 10px;
+      border: 1px solid rgba(102, 126, 234, 0.2);
+    }
+
+    .entry-count {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 15px;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .diary-container {
+        margin: 10px;
+        padding: 25px;
+      }
+
+      .diary-header {
+        font-size: 2.5rem;
+      }
+
+      .diary-buttons {
+        flex-direction: column;
+      }
+
+      .diary-btn {
+        width: 100%;
+      }
+
+      .date-input {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 15px;
+      }
+
+      .entry-actions {
+        flex-direction: column;
+      }
+
+      .edit-btn,
+      .delete-btn {
+        width: 100%;
+      }
+
+      .toolbar-row {
+        flex-wrap: wrap;
+        gap: 3px;
+      }
+
+      .toolbar-btn {
+        min-width: 30px;
+        padding: 6px 8px;
+        font-size: 12px;
+      }
+
+      .toolbar-select {
+        min-width: 60px;
+        font-size: 11px;
+      }
+
+      .color-picker {
+        width: 30px;
+        height: 30px;
+      }
+
+      .rich-editor {
+        min-height: 250px;
+        padding: 15px;
+        font-size: 14px;
+      }
+
+      .emoji-picker-content {
+        width: 95%;
+        max-width: 400px;
+      }
+
+      .emoji-categories {
+        padding: 10px;
+        gap: 5px;
+      }
+
+      .emoji-category {
+        padding: 8px 12px;
+        font-size: 1rem;
+        min-width: 40px;
+      }
+
+      .emoji-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 5px;
+        padding: 15px;
+      }
+
+      .emoji-item {
+        padding: 8px;
+        font-size: 1.2rem;
+        min-height: 40px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .diary-container {
+        padding: 20px;
+      }
+
+      .diary-header {
+        font-size: 2rem;
+      }
+
+      .date-selector,
+      .diary-input-section,
+      .diary-entries {
+        padding: 20px;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .diary-entry {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    .save-btn:hover {
+      animation: pulse 0.6s ease-in-out;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="diary-container">
+    <button class="back-btn" onclick="window.location.href='index.html'">← Back to Study Tracker</button>
+
+    <h1 class="diary-header">📖 Personal Diary</h1>
+
+    <div class="date-selector">
+      <h3>📅 Select Date</h3>
+      <input type="date" id="date-selector" class="date-input">
+      <button class="load-btn" onclick="loadEntry()">📖 Load Entry</button>
+    </div>
+
+    <div class="diary-input-section">
+      <h3>✍️ Today's Entry</h3>
+      <div class="current-date" id="current-date"></div>
+
+      <div class="title-input-group">
+        <label for="diary-title" class="title-label">📝 Entry Title</label>
+        <input type="text" id="diary-title" class="title-input"
+          placeholder="Give your diary entry a meaningful title..." maxlength="100">
+        <div class="title-counter" id="title-counter">0/100</div>
+      </div>
+
+      <div class="rich-editor-container">
+        <div class="editor-toolbar">
+          <!-- First Row -->
+          <div class="toolbar-row">
+            <button class="toolbar-btn" onclick="saveEntry()" title="Save Entry">
+              <i class="fas fa-save"></i>
+            </button>
+            <div class="separator"></div>
+            <button class="toolbar-btn" onclick="formatText('bold')" title="Bold">
+              <i class="fas fa-bold"></i>
+            </button>
+            <button class="toolbar-btn" onclick="formatText('italic')" title="Italic">
+              <i class="fas fa-italic"></i>
+            </button>
+            <button class="toolbar-btn" onclick="formatText('underline')" title="Underline">
+              <i class="fas fa-underline"></i>
+            </button>
+            <button class="toolbar-btn" onclick="formatText('strikethrough')" title="Strikethrough">
+              <i class="fas fa-strikethrough"></i>
+            </button>
+            <div class="separator"></div>
+            <button class="toolbar-btn" onclick="alignText('left')" title="Align Left">
+              <i class="fas fa-align-left"></i>
+            </button>
+            <button class="toolbar-btn" onclick="alignText('center')" title="Align Center">
+              <i class="fas fa-align-center"></i>
+            </button>
+            <button class="toolbar-btn" onclick="alignText('right')" title="Align Right">
+              <i class="fas fa-align-right"></i>
+            </button>
+            <button class="toolbar-btn" onclick="alignText('justify')" title="Justify">
+              <i class="fas fa-align-justify"></i>
+            </button>
+            <div class="separator"></div>
+            <select class="toolbar-select" onchange="changeFontFamily(this.value)" title="Font Family">
+              <option value="Arial">Arial</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Poppins">Poppins</option>
+            </select>
+            <select class="toolbar-select" onchange="changeFontSize(this.value)" title="Font Size">
+              <option value="1">8px</option>
+              <option value="2">10px</option>
+              <option value="3" selected>12px</option>
+              <option value="4">14px</option>
+              <option value="5">16px</option>
+              <option value="6">18px</option>
+              <option value="7">24px</option>
+            </select>
+            <input type="color" class="color-picker" onchange="changeTextColor(this.value)" title="Text Color"
+              value="#000000">
+            <input type="color" class="color-picker" onchange="changeBackgroundColor(this.value)"
+              title="Background Color" value="#ffffff">
+          </div>
+
+          <!-- Second Row -->
+          <div class="toolbar-row">
+            <button class="toolbar-btn" onclick="document.execCommand('cut')" title="Cut">
+              <i class="fas fa-cut"></i>
+            </button>
+            <button class="toolbar-btn" onclick="document.execCommand('copy')" title="Copy">
+              <i class="fas fa-copy"></i>
+            </button>
+            <button class="toolbar-btn" onclick="document.execCommand('paste')" title="Paste">
+              <i class="fas fa-paste"></i>
+            </button>
+            <div class="separator"></div>
+            <button class="toolbar-btn" onclick="insertList('unordered')" title="Unordered List">
+              <i class="fas fa-list-ul"></i>
+            </button>
+            <button class="toolbar-btn" onclick="insertList('ordered')" title="Ordered List">
+              <i class="fas fa-list-ol"></i>
+            </button>
+            <div class="separator"></div>
+            <button class="toolbar-btn" onclick="document.execCommand('outdent')" title="Decrease Indent">
+              <i class="fas fa-outdent"></i>
+            </button>
+            <button class="toolbar-btn" onclick="document.execCommand('indent')" title="Increase Indent">
+              <i class="fas fa-indent"></i>
+            </button>
+            <div class="separator"></div>
+            <button class="toolbar-btn" onclick="insertQuote()" title="Blockquote">
+              <i class="fas fa-quote-right"></i>
+            </button>
+            <button class="toolbar-btn" onclick="document.execCommand('undo')" title="Undo">
+              <i class="fas fa-undo"></i>
+            </button>
+            <button class="toolbar-btn" onclick="document.execCommand('redo')" title="Redo">
+              <i class="fas fa-redo"></i>
+            </button>
+            <div class="separator"></div>
+            <button class="toolbar-btn" onclick="insertLink()" title="Insert Link">
+              <i class="fas fa-link"></i>
+            </button>
+            <button class="toolbar-btn" onclick="document.execCommand('unlink')" title="Remove Link">
+              <i class="fas fa-unlink"></i>
+            </button>
+            <div class="separator"></div>
+            <button class="toolbar-btn" onclick="toggleEmojiPicker()" title="Insert Emoji">
+              <i class="fas fa-smile"></i>
+            </button>
+            <button class="toolbar-btn" onclick="insertDate()" title="Insert Date/Time">
+              <i class="fas fa-clock"></i>
+            </button>
+            <button class="toolbar-btn" onclick="insertHorizontalRule()" title="Insert Horizontal Rule">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="rich-editor" class="rich-editor" contenteditable="true"
+          data-placeholder="Write about your day, thoughts, feelings, achievements, or anything you want to remember...">
+        </div>
+
+        <div class="editor-status">
+          <span class="status-tag">p</span>
+          <span class="word-count">Words: <span id="word-count">0</span></span>
+          <div class="status-handle">⋮</div>
+        </div>
+      </div>
+
+      <!-- Emoji Picker Modal -->
+      <div id="emoji-picker" class="emoji-picker-modal">
+        <div class="emoji-picker-content">
+          <div class="emoji-picker-header">
+            <h3>😊 Select Emoji</h3>
+            <button class="close-emoji-btn" onclick="toggleEmojiPicker()">×</button>
+          </div>
+          <div class="emoji-categories">
+            <button class="emoji-category active" onclick="showEmojiCategory('smileys')">😊</button>
+            <button class="emoji-category" onclick="showEmojiCategory('animals')">🐶</button>
+            <button class="emoji-category" onclick="showEmojiCategory('food')">🍕</button>
+            <button class="emoji-category" onclick="showEmojiCategory('activities')">⚽</button>
+            <button class="emoji-category" onclick="showEmojiCategory('travel')">✈️</button>
+            <button class="emoji-category" onclick="showEmojiCategory('objects')">💡</button>
+            <button class="emoji-category" onclick="showEmojiCategory('symbols')">❤️</button>
+            <button class="emoji-category" onclick="showEmojiCategory('flags')">🏁</button>
+          </div>
+          <div id="emoji-grid" class="emoji-grid">
+            <!-- Emojis will be loaded here -->
+          </div>
+        </div>
+      </div>
+      <div class="diary-buttons">
+        <button class="diary-btn save-btn" onclick="saveEntry()">
+          💾 Save Entry
+          <span class="keyboard-shortcut">Ctrl+Enter</span>
+        </button>
+        <button class="diary-btn clear-btn" onclick="clearTextarea()">🗑️ Clear</button>
+      </div>
+    </div>
+
+    <div class="diary-entries">
+      <h3>
+        📚 Recent Entries
+        <span class="entry-count" id="entry-count">0 entries</span>
+      </h3>
+      <div id="entries-container">
+        <div class="no-entries">No diary entries yet. Start writing about your day!</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Check if user is logged in
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.href = 'login/login.html';
+    }
+
+    let entries = JSON.parse(localStorage.getItem('diaryEntries')) || [];
+    let currentDate = new Date().toISOString().split('T')[0];
+
+    // Title counter functionality
+    document.getElementById('diary-title').addEventListener('input', function () {
+      const title = this.value;
+      const counter = document.getElementById('title-counter');
+      counter.textContent = `${title.length}/100`;
+
+      // Change color based on length
+      if (title.length > 80) {
+        counter.style.color = '#e74c3c';
+        counter.style.fontWeight = '700';
+      } else if (title.length > 60) {
+        counter.style.color = '#f39c12';
+        counter.style.fontWeight = '600';
+      } else {
+        counter.style.color = '#95a5a6';
+        counter.style.fontWeight = '500';
+      }
+    });
+
+    // Rich Editor Functions
+    function formatText(command) {
+      document.execCommand(command, false, null);
+      updateWordCount();
+    }
+
+    function alignText(alignment) {
+      document.execCommand('justify' + alignment.charAt(0).toUpperCase() + alignment.slice(1), false, null);
+      updateWordCount();
+    }
+
+    function changeFontFamily(font) {
+      document.execCommand('fontName', false, font);
+      updateWordCount();
+    }
+
+    function changeFontSize(size) {
+      document.execCommand('fontSize', false, size);
+      updateWordCount();
+    }
+
+    function changeTextColor(color) {
+      document.execCommand('foreColor', false, color);
+      updateWordCount();
+    }
+
+    function changeBackgroundColor(color) {
+      document.execCommand('hiliteColor', false, color);
+      updateWordCount();
+    }
+
+    function insertList(type) {
+      if (type === 'unordered') {
+        document.execCommand('insertUnorderedList', false, null);
+      } else {
+        document.execCommand('insertOrderedList', false, null);
+      }
+      updateWordCount();
+    }
+
+    function insertQuote() {
+      const selection = window.getSelection();
+      if (selection.toString()) {
+        document.execCommand('formatBlock', false, 'blockquote');
+      } else {
+        document.execCommand('insertHTML', false, '<blockquote style="border-left: 4px solid #2196f3; padding-left: 15px; margin: 10px 0; color: #666;">Enter your quote here...</blockquote>');
+      }
+      updateWordCount();
+    }
+
+    function insertLink() {
+      const url = prompt('Enter URL:');
+      if (url) {
+        document.execCommand('createLink', false, url);
+      }
+      updateWordCount();
+    }
+
+    // Emoji data
+    const emojiData = {
+      smileys: ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠'],
+      animals: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🐣', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜', '🦟', '🦗', '🕷️', '🕸️', '🦂', '🐢', '🐍', '🦎', '🦖', '🦕', '🐙', '🦑', '🦐', '🦞', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊', '🐅', '🐆', '🦓', '🦍', '🦧', '🐘', '🦛', '🦏', '🐪', '🐫', '🦒', '🦘', '🐃', '🐂', '🐄', '🐎', '🐖', '🐏', '🐑', '🦙', '🐐', '🦌', '🐕', '🐩', '🦮', '🐕‍🦺', '🐈', '🐈‍⬛', '🐓', '🦃', '🦚', '🦜', '🦢', '🦩', '🕊️', '🐇', '🦝', '🦨', '🦡', '🦫', '🦦', '🦥', '🐁', '🐀', '🐿️', '🦔'],
+      food: ['🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🫐', '🍈', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🥑', '🥦', '🥬', '🥒', '🌶️', '🫑', '🌽', '🥕', '🫒', '🧄', '🧅', '🥔', '🍠', '🥐', '🥯', '🍞', '🥖', '🥨', '🧀', '🥚', '🍳', '🧈', '🥞', '🧇', '🥓', '🥩', '🍗', '🍖', '🦴', '🌭', '🍔', '🍟', '🍕', '🥪', '🥙', '🧆', '🌮', '🌯', '🫔', '🥗', '🥘', '🫕', '🥫', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱', '🥟', '🦪', '🍤', '🍙', '🍚', '🍘', '🍥', '🥠', '🥮', '🍢', '🍡', '🍧', '🍨', '🍦', '🥧', '🧁', '🍰', '🎂', '🍮', '🍭', '🍬', '🍫', '🍿', '🍪', '🌰', '🥜', '🍯', '🥛', '🍼', '🫖', '☕', '🍵', '🧃', '🥤', '🧋', '🍶', '🍺', '🍷', '🥂', '🥃', '🍸', '🍹', '🧉', '🍾', '🥄', '🍴', '🍽️', '🥣', '🥡', '🥢', '🧂'],
+      activities: ['⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱', '🪀', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🥅', '⛳', '🪁', '🏹', '🎣', '🤿', '🥊', '🥋', '🎽', '🛹', '🛷', '⛸️', '🥌', '🎿', '⛷️', '🏂', '🪂', '🏋️‍♀️', '🏋️', '🏋️‍♂️', '🤼‍♀️', '🤼', '🤼‍♂️', '🤸‍♀️', '🤸', '🤸‍♂️', '⛹️‍♀️', '⛹️', '⛹️‍♂️', '🤺', '🤾‍♀️', '🤾', '🤾‍♂️', '🏊‍♀️', '🏊', '🏊‍♂️', '🚣‍♀️', '🚣', '🚣‍♂️', '🧗‍♀️', '🧗', '🧗‍♂️', '🚵‍♀️', '🚵', '🚵‍♂️', '🏇', '🫃', '🫄', '🤰', '🤱', '👼', '🎄', '🎃', '🎗️', '🎟️', '🎫', '🎖️', '🏆', '🏅', '🥇', '🥈', '🥉', '⚜️', '🔰', '🔱', '⭕', '❌', '❓', '❔', '❕', '❗', '〽️', '💯', '💢', '♨️', '💠', '🔘', '🔴', '🟠', '🟡', '🟢', '🔵', '🟣', '⚫', '⚪', '🟤', '🔺', '🔻', '🔸', '🔹', '🔶', '🔷', '🔳', '🔲', '▪️', '▫️', '◾', '◽', '◼️', '◻️', '🟥', '🟧', '🟨', '🟩', '🟦', '🟪', '⬛', '⬜', '🟫'],
+      travel: ['🚗', '🚕', '🚙', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐', '🚚', '🚛', '🚜', '🛴', '🛵', '🛺', '🚔', '🚍', '🚘', '🚖', '🚡', '🚠', '🚟', '🚃', '🚋', '🚞', '🚝', '🚄', '🚅', '🚈', '🚂', '🚆', '🚇', '🚊', '🚉', '✈️', '🛫', '🛬', '🛩️', '💺', '🛰️', '🚀', '🛸', '🚁', '🛶', '⛵', '🚤', '🛥️', '🛳️', '⛴️', '🚢', '⚓', '🚧', '⛽', '🚏', '🚦', '🚥', '🗺️', '🗿', '🗽', '🗼', '🏰', '🏯', '🏟️', '🎡', '🎢', '🎠', '⛲', '⛱️', '🏖️', '🏝️', '🏔️', '🗻', '⛰️', '🌋', '🗾', '🏕️', '⛺', '🏠', '🏡', '🏘️', '🏚️', '🏗️', '🏭', '🏢', '🏬', '🏣', '🏤', '🏥', '🏦', '🏨', '🏪', '🏫', '🏩', '💒', '🏛️', '⛪', '🕌', '🕍', '🛕', '🕋', '⛩️', '🛤️', '🛣️', '🗺️', '🗺️‍🗺️'],
+      objects: ['⌚', '📱', '📲', '💻', '⌨️', '🖥️', '🖨️', '🖱️', '🖲️', '🕹️', '🎮', '🎰', '🎲', '🧩', '🎨', '🎭', '🎪', '🎟️', '🎫', '🎗️', '🎖️', '🏆', '🏅', '🥇', '🥈', '🥉', '⚜️', '🔰', '🔱', '⭕', '❌', '❓', '❔', '❕', '❗', '〽️', '💯', '💢', '♨️', '💠', '🔘', '🔴', '🟠', '🟡', '🟢', '🔵', '🟣', '⚫', '⚪', '🟤', '🔺', '🔻', '🔸', '🔹', '🔶', '🔷', '🔳', '🔲', '▪️', '▫️', '◾', '◽', '◼️', '◻️', '🟥', '🟧', '🟨', '🟩', '🟦', '🟪', '⬛', '⬜', '🟫', '🔈', '🔇', '🔉', '🔊', '🔔', '🔕', '📣', '📢', '💬', '💭', '🗯️', '♠️', '♣️', '♥️', '♦️', '🃏', '🀄', '🎴', '🕐', '🕑', '🕒', '🕓', '🕔', '🕕', '🕖', '🕗', '🕘', '🕙', '🕚', '🕛', '🕜', '🕝', '🕞', '🕟', '🕠', '🕡', '🕢', '🕣', '🕤', '🕥', '🕦', '🕧'],
+      symbols: ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '💟', '☮️', '✝️', '☪️', '🕉️', '☸️', '✡️', '🔯', '🕎', '☯️', '☦️', '🛐', '⛎', '♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓', '🆔', '⚛️', '🉑', '☢️', '☣️', '📴', '📳', '🈶', '🈚', '🈸', '🈺', '🈷️', '✴️', '🆚', '💮', '🉐', '㊙️', '㊗️', '🈴', '🈵', '🈹', '🈲', '🅰️', '🅱️', '🆎', '🆑', '🅾️', '🆘', '❌', '⭕', '🛑', '⛔', '📛', '🚫', '💯', '💢', '♨️', '🚷', '🚯', '🚳', '🚱', '🔞', '📵', '🚭', '❗', '❕', '❓', '❔', '‼️', '⁉️', '🔅', '🔆', '〽️', '⚠️', '🚸', '🔱', '⚜️', '🔰', '♻️', '✅', '🈯', '💹', '❇️', '✳️', '❎', '🌐', '💠', 'Ⓜ️', '🌀', '💤', '🏧', '🚾', '♿', '🅿️', '🛗', '🛂', '🛃', '🛄', '🛅', '🚹', '🚺', '🚼', '🚻', '🚮', '🎦', '📶', '🈁', '🔣', 'ℹ️', '🔤', '🔡', '🔠', '🆖', '🆗', '🆙', '🆒', '🆕', '🆓', '0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟', '🔢', '#️⃣', '*️⃣', '⏏️', '▶️', '⏸️', '⏯️', '⏹️', '⏺️', '⏭️', '⏮️', '⏩', '⏪', '⏫', '⏬', '◀️', '🔼', '🔽', '➡️', '⬅️', '⬆️', '⬇️', '↗️', '↘️', '↙️', '↖️', '↕️', '↔️', '↪️', '↩️', '⤴️', '⤵️', '🔀', '🔁', '🔂', '🔄', '🔃', '🎵', '🎶', '➕', '➖', '➗', '✖️', '♾️', '💲', '💱', '™️', '©️', '®️', '👁️‍🗨️', '🔚', '🔙', '🔛', '🔝', '🔜', '〰️', '➰', '➿', '✔️', '☑️', '🔘', '🔴', '🟠', '🟡', '🟢', '🔵', '🟣', '⚫', '⚪', '🟤', '🔺', '🔻', '🔸', '🔹', '🔶', '🔷', '🔳', '🔲', '▪️', '▫️', '◾', '◽', '◼️', '◻️', '🟥', '🟧', '🟨', '🟩', '🟦', '🟪', '⬛', '⬜', '🟫'],
+      flags: ['🏁', '🚩', '🎌', '🏴', '🏳️', '🏳️‍🌈', '🏴‍☠️', '🇦🇨', '🇦🇩', '🇦🇪', '🇦🇫', '🇦🇬', '🇦🇮', '🇦🇱', '🇦🇲', '🇦🇴', '🇦🇶', '🇦🇷', '🇦🇸', '🇦🇹', '🇦🇺', '🇦🇼', '🇦🇽', '🇦🇿', '🇧🇦', '🇧🇧', '🇧🇩', '🇧🇪', '🇧🇫', '🇧🇬', '🇧🇭', '🇧🇯', '🇧🇱', '🇧🇲', '🇧🇳', '🇧🇴', '🇧🇶', '🇧🇷', '🇧🇸', '🇧🇹', '🇧🇻', '🇧🇼', '🇧🇾', '🇧🇿', '🇨🇦', '🇨🇨', '🇨🇩', '🇨🇫', '🇨🇬', '🇨🇭', '🇨🇮', '🇨🇰', '🇨🇱', '🇨🇲', '🇨🇳', '🇨🇴', '🇨🇵', '🇨🇷', '🇨🇺', '🇨🇻', '🇨🇼', '🇨🇽', '🇨🇾', '🇨🇿', '🇩🇪', '🇩🇯', '🇩🇰', '🇩🇲', '🇩🇴', '🇩🇿', '🇪🇨', '🇪🇪', '🇪🇬', '🇪🇭', '🇪🇷', '🇪🇸', '🇪🇹', '🇪🇺', '🇫🇮', '🇫🇯', '🇫🇰', '🇫🇲', '🇫🇴', '🇫🇷', '🇬🇦', '🇬🇧', '🇬🇩', '🇬🇪', '🇬🇫', '🇬🇬', '🇬🇭', '🇬🇮', '🇬🇱', '🇬🇲', '🇬🇳', '🇬🇵', '🇬🇶', '🇬🇷', '🇬🇸', '🇬🇹', '🇬🇺', '🇬🇼', '🇬🇾', '🇭🇹', '🇭🇲', '🇭🇳', '🇭🇷', '🇭🇹', '🇭🇺', '🇮🇩', '🇮🇪', '🇮🇱', '🇮🇲', '🇮🇳', '🇮🇴', '🇮🇶', '🇮🇷', '🇮🇸', '🇮🇹', '🇯🇪', '🇯🇲', '🇯🇴', '🇯🇵', '🇰🇪', '🇰🇬', '🇰🇭', '🇰🇮', '🇰🇲', '🇰🇳', '🇰🇵', '🇰🇷', '🇰🇼', '🇰🇾', '🇰🇿', '🇱🇦', '🇱🇧', '🇱🇨', '🇱🇮', '🇱🇰', '🇱🇷', '🇱🇸', '🇱🇹', '🇱🇺', '🇱🇻', '🇱🇾', '🇲🇦', '🇲🇨', '🇲🇩', '🇲🇪', '🇲🇫', '🇲🇬', '🇲🇭', '🇲🇰', '🇲🇱', '🇲🇲', '🇲🇳', '🇲🇴', '🇲🇵', '🇲🇶', '🇲🇷', '🇲🇸', '🇲🇹', '🇲🇺', '🇲🇻', '🇲🇼', '🇲🇽', '🇲🇾', '🇲🇿', '🇳🇦', '🇳🇨', '🇳🇪', '🇳🇫', '🇳🇬', '🇳🇮', '🇳🇱', '🇳🇴', '🇳🇵', '🇳🇷', '🇳🇺', '🇳🇿', '🇴🇲', '🇵🇦', '🇵🇪', '🇵🇫', '🇵🇬', '🇵🇭', '🇵🇰', '🇵🇱', '🇵🇲', '🇵🇳', '🇵🇷', '🇵🇸', '🇵🇹', '🇵🇼', '🇵🇾', '🇶🇦', '🇷🇪', '🇷🇴', '🇷🇸', '🇷🇺', '🇷🇼', '🇸🇦', '🇸🇧', '🇸🇨', '🇸🇩', '🇸🇪', '🇸🇬', '🇸🇭', '🇸🇮', '🇸🇯', '🇸🇰', '🇸🇱', '🇸🇲', '🇸🇳', '🇸🇴', '🇸🇷', '🇸🇸', '🇸🇹', '🇸🇻', '🇸🇽', '🇸🇾', '🇸🇿', '🇹🇦', '🇹🇨', '🇹🇩', '🇹🇯', '🇹🇰', '🇹🇱', '🇹🇲', '🇹🇳', '🇹🇴', '🇹🇷', '🇹🇹', '🇹🇻', '🇹🇼', '🇹🇿', '🇺🇦', '🇺🇬', '🇺🇸', '🇺🇾', '🇺🇿', '🇻🇦', '🇻🇨', '🇻🇪', '🇻🇬', '🇻🇮', '🇻🇳', '🇻🇺', '🇼🇫', '🇼🇸', '🇾🇪', '🇾🇹', '🇿🇦', '🇿🇲', '🇿🇼']
+    };
+
+    function toggleEmojiPicker() {
+      const picker = document.getElementById('emoji-picker');
+      if (picker.style.display === 'block') {
+        picker.style.display = 'none';
+      } else {
+        picker.style.display = 'block';
+        showEmojiCategory('smileys');
+      }
+    }
+
+    function showEmojiCategory(category) {
+      // Update active category button
+      document.querySelectorAll('.emoji-category').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // Load emojis for selected category
+      const emojiGrid = document.getElementById('emoji-grid');
+      emojiGrid.innerHTML = '';
+
+      emojiData[category].forEach(emoji => {
+        const emojiItem = document.createElement('div');
+        emojiItem.className = 'emoji-item';
+        emojiItem.textContent = emoji;
+        emojiItem.onclick = () => insertSelectedEmoji(emoji);
+        emojiGrid.appendChild(emojiItem);
+      });
+    }
+
+    function insertSelectedEmoji(emoji) {
+      document.execCommand('insertText', false, emoji);
+      updateWordCount();
+      toggleEmojiPicker();
+    }
+
+    function insertDate() {
+      const now = new Date();
+      const dateString = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      document.execCommand('insertText', false, dateString);
+      updateWordCount();
+    }
+
+    function insertHorizontalRule() {
+      document.execCommand('insertHorizontalRule', false, null);
+      updateWordCount();
+    }
+
+    function updateWordCount() {
+      const editor = document.getElementById('rich-editor');
+      const text = editor.innerText || editor.textContent;
+      const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+      document.getElementById('word-count').textContent = wordCount;
+    }
+
+    // Add event listeners for rich editor
+    document.getElementById('rich-editor').addEventListener('input', updateWordCount);
+    document.getElementById('rich-editor').addEventListener('keyup', updateWordCount);
+    document.getElementById('rich-editor').addEventListener('paste', updateWordCount);
+
+    // Set current date in date selector and display
+    document.getElementById('date-selector').value = currentDate;
+    document.getElementById('current-date').textContent = `📅 ${new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })}`;
+
+    function updateEntryCount() {
+      const count = entries.length;
+      document.getElementById('entry-count').textContent = `${count} entr${count === 1 ? 'y' : 'ies'}`;
+    }
+
+    function saveEntry() {
+      const editor = document.getElementById('rich-editor');
+      const titleInput = document.getElementById('diary-title');
+      const entryText = editor.innerHTML.trim();
+      const entryTitle = titleInput.value.trim();
+      const selectedDate = document.getElementById('date-selector').value;
+
+      if (!entryTitle) {
+        showMessage('Please add a title to your diary entry!', 'error');
+        return;
+      }
+
+      if (!entryText) {
+        showMessage('Please write something in your diary entry!', 'error');
+        return;
+      }
+
+      if (!selectedDate) {
+        showMessage('Please select a date!', 'error');
+        return;
+      }
+
+      const entry = {
+        id: Date.now(),
+        date: selectedDate,
+        title: entryTitle,
+        content: entryText,
+        timestamp: Date.now(),
+        displayDate: new Date(selectedDate).toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
+      };
+
+      // Check if entry for this date already exists
+      const existingIndex = entries.findIndex(e => e.date === selectedDate);
+      if (existingIndex !== -1) {
+        entries[existingIndex] = entry;
+        showMessage('Diary entry updated successfully!', 'success');
+      } else {
+        entries.unshift(entry);
+        showMessage('Diary entry saved successfully!', 'success');
+      }
+
+      localStorage.setItem('diaryEntries', JSON.stringify(entries));
+
+      editor.innerHTML = '';
+      titleInput.value = '';
+      document.getElementById('title-counter').textContent = '0/100';
+      updateWordCount();
+      displayEntries();
+      updateEntryCount();
+    }
+
+    function loadEntry() {
+      const selectedDate = document.getElementById('date-selector').value;
+      const textarea = document.getElementById('diary-textarea');
+
+      if (!selectedDate) {
+        showMessage('Please select a date!', 'error');
+        return;
+      }
+
+      const entry = entries.find(e => e.date === selectedDate);
+
+      if (entry) {
+        editor.innerHTML = entry.content;
+        document.getElementById('diary-title').value = entry.title || '';
+        document.getElementById('title-counter').textContent = `${(entry.title || '').length}/100`;
+        document.getElementById('current-date').textContent = `📅 ${entry.displayDate}`;
+        updateWordCount();
+        showMessage('Entry loaded successfully!', 'success');
+      } else {
+        editor.innerHTML = '';
+        document.getElementById('diary-title').value = '';
+        document.getElementById('title-counter').textContent = '0/100';
+        document.getElementById('current-date').textContent = `📅 ${new Date(selectedDate).toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })}`;
+        updateWordCount();
+        showMessage('No entry found for this date. You can create a new one!', 'info');
+      }
+    }
+
+    function editEntry(id) {
+      const entry = entries.find(e => e.id === id);
+      if (entry) {
+        document.getElementById('date-selector').value = entry.date;
+        document.getElementById('rich-editor').innerHTML = entry.content;
+        document.getElementById('diary-title').value = entry.title || '';
+        document.getElementById('title-counter').textContent = `${(entry.title || '').length}/100`;
+        document.getElementById('current-date').textContent = `📅 ${entry.displayDate}`;
+        updateWordCount();
+        showMessage('Entry loaded for editing!', 'success');
+      }
+    }
+
+    function deleteEntry(id) {
+      if (confirm('Are you sure you want to delete this diary entry? This action cannot be undone.')) {
+        entries = entries.filter(entry => entry.id !== id);
+        localStorage.setItem('diaryEntries', JSON.stringify(entries));
+        displayEntries();
+        updateEntryCount();
+        showMessage('Entry deleted successfully!', 'success');
+      }
+    }
+
+    function clearTextarea() {
+      if (confirm('Are you sure you want to clear the editor and title?')) {
+        document.getElementById('rich-editor').innerHTML = '';
+        document.getElementById('diary-title').value = '';
+        document.getElementById('title-counter').textContent = '0/100';
+        updateWordCount();
+        showMessage('Editor and title cleared!', 'info');
+      }
+    }
+
+    function showMessage(message, type) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}-message`;
+      messageDiv.textContent = message;
+      messageDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        padding: 15px 25px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
+        font-family: 'Poppins', sans-serif;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        animation: slideIn 0.3s ease-out;
+        max-width: 300px;
+      `;
+
+      // Set background based on type
+      if (type === 'success') {
+        messageDiv.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+        messageDiv.style.color = 'white';
+      } else if (type === 'error') {
+        messageDiv.style.background = 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
+        messageDiv.style.color = 'white';
+      } else if (type === 'info') {
+        messageDiv.style.background = 'linear-gradient(135deg, #17a2b8 0%, #138496 100%)';
+        messageDiv.style.color = 'white';
+      }
+
+      document.body.appendChild(messageDiv);
+
+      setTimeout(() => {
+        messageDiv.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => messageDiv.remove(), 300);
+      }, 3000);
+    }
+
+    function displayEntries() {
+      const container = document.getElementById('entries-container');
+
+      if (entries.length === 0) {
+        container.innerHTML = '<div class="no-entries">No diary entries yet. Start writing about your day!</div>';
+        return;
+      }
+
+      container.innerHTML = entries.map(entry => `
+        <div class="diary-entry">
+          <div class="entry-date">📅 ${entry.displayDate}</div>
+          <div class="entry-title">📝 ${entry.title || 'Untitled Entry'}</div>
+          <div class="entry-content" style="font-family: 'Poppins', sans-serif; line-height: 1.6;">${entry.content}</div>
+          <div class="entry-actions">
+            <button class="edit-btn" onclick="editEntry(${entry.id})">✏️ Edit</button>
+            <button class="delete-btn" onclick="deleteEntry(${entry.id})">🗑️ Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Add keyboard support for Ctrl+Enter to save
+    document.getElementById('diary-textarea').addEventListener('keydown', function (e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        saveEntry();
+      }
+    });
+
+    // Add CSS animations
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      
+      @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Load entries on page load
+    displayEntries();
+    updateEntryCount();
+  </script>
+</body>
+
+</html>

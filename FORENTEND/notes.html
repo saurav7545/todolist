@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notes Page</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .notes-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      min-height: 80vh;
+      padding: 30px;
+    }
+
+    .notes-header {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #495057;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+
+    .note-input-section {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      border: 2px solid #e9ecef;
+    }
+
+    .note-input-section h3 {
+      color: #495057;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+    }
+
+    .note-textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      transition: all 0.3s ease;
+    }
+
+    .note-textarea:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+
+    .note-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .note-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .add-note-btn {
+      background: #28a745;
+      color: white;
+    }
+
+    .add-note-btn:hover {
+      background: #218838;
+      transform: translateY(-2px);
+    }
+
+    .clear-btn {
+      background: #dc3545;
+      color: white;
+    }
+
+    .clear-btn:hover {
+      background: #c82333;
+      transform: translateY(-2px);
+    }
+
+    .notes-list {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 12px;
+      border: 2px solid #e9ecef;
+    }
+
+    .notes-list h3 {
+      color: #495057;
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+    }
+
+    .note-item {
+      background: white;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #007bff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .note-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .note-content {
+      color: #495057;
+      line-height: 1.6;
+      margin-bottom: 10px;
+      white-space: pre-wrap;
+    }
+
+    .note-date {
+      color: #6c757d;
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+
+    .note-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .delete-btn {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .delete-btn:hover {
+      background: #c82333;
+    }
+
+    .back-btn {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .back-btn:hover {
+      background: #5a6268;
+      transform: translateY(-2px);
+    }
+
+    .no-notes {
+      text-align: center;
+      color: #6c757d;
+      font-style: italic;
+      padding: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .notes-container {
+        margin: 10px;
+        padding: 20px;
+      }
+
+      .note-buttons {
+        flex-direction: column;
+      }
+
+      .note-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="notes-container">
+    <button class="back-btn" onclick="window.location.href='index.html'">← Back to Study Tracker</button>
+
+    <h1 class="notes-header">📝 Notes Page</h1>
+
+    <div class="note-input-section">
+      <h3>Add New Note</h3>
+      <textarea id="note-textarea" class="note-textarea" placeholder="Write your note here..."></textarea>
+      <div class="note-buttons">
+        <button class="note-btn add-note-btn" onclick="addNote()">➕ Add Note</button>
+        <button class="note-btn clear-btn" onclick="clearTextarea()">🗑️ Clear</button>
+      </div>
+    </div>
+
+    <div class="notes-list">
+      <h3>Your Notes</h3>
+      <div id="notes-container">
+        <div class="no-notes">No notes yet. Add your first note above!</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Check if user is logged in
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.href = 'login/login.html';
+    }
+
+    let notes = JSON.parse(localStorage.getItem('notes')) || [];
+
+    function addNote() {
+      const textarea = document.getElementById('note-textarea');
+      const noteText = textarea.value.trim();
+
+      if (!noteText) {
+        alert('Please write something in your note!');
+        return;
+      }
+
+      const note = {
+        id: Date.now(),
+        content: noteText,
+        date: new Date().toLocaleString(),
+        timestamp: Date.now()
+      };
+
+      notes.unshift(note); // Add to beginning of array
+      localStorage.setItem('notes', JSON.stringify(notes));
+
+      textarea.value = '';
+      displayNotes();
+    }
+
+    function deleteNote(id) {
+      notes = notes.filter(note => note.id !== id);
+      localStorage.setItem('notes', JSON.stringify(notes));
+      displayNotes();
+    }
+
+    function clearTextarea() {
+      document.getElementById('note-textarea').value = '';
+    }
+
+    function displayNotes() {
+      const container = document.getElementById('notes-container');
+
+      if (notes.length === 0) {
+        container.innerHTML = '<div class="no-notes">No notes yet. Add your first note above!</div>';
+        return;
+      }
+
+      container.innerHTML = notes.map(note => `
+        <div class="note-item">
+          <div class="note-content">${note.content}</div>
+          <div class="note-date">📅 ${note.date}</div>
+          <div class="note-actions">
+            <button class="delete-btn" onclick="deleteNote(${note.id})">🗑️ Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Add keyboard support for Enter key (Ctrl+Enter to add note)
+    document.getElementById('note-textarea').addEventListener('keydown', function (e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        addNote();
+      }
+    });
+
+    // Load notes on page load
+    displayNotes();
+  </script>
+</body>
+
+</html>

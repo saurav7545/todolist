@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Study Tracker</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <h1>📚 Study Tracker</h1>
+      <p>Login to access Your study tools</p>
+    </div>
+
+    <div id="error-message" class="error-message"></div>
+    <div id="success-message" class="success-message"></div>
+
+    <form class="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label class="Username" for="username">Username</label>
+        <input type="text" id="username" class="form-input" placeholder="Enter your username" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+      </div>
+
+      <button type="submit" class="login-btn">🔐 Login</button>
+    </form>
+
+    <div class="register-link">
+      <p>Don't have an account? <a href="#" onclick="showRegister()">Register here</a></p>
+    </div>
+
+    <div class="admin-link">
+      <p>👨‍💼 <a href="../admin/admin-login.html" target="_blank">Access Admin Panel</a></p>
+    </div>
+
+    <div class="demo-credentials">
+      <h4>Demo Credentials:</h4>
+      <p><strong>Username:</strong> demo</p>
+      <p><strong>Password:</strong> 123456</p>
+    </div>
+  </div>
+
+  <script src="login.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Logout Button -->
+  <div class="logout-section">
+    <button id="logout-btn" class="logout-btn">
+      🚪 Logout
+    </button>
+  </div>
+
+  <div class="container">
+    <!-- Left Panel -->
+    <div class="left">
+      <h3>📘 Today Study Target</h3>
+      <div class="date-time-display">
+        <div class="current-date" id="current-date">Loading...</div>
+        <div class="current-time" id="current-time">Loading...</div>
+      </div>
+
+      <!-- Task Filter Buttons -->
+      <div class="task-filters">
+        <button id="all-tasks" class="filter-btn active" onclick="filterTasks('all')">
+          📋 All Tasks
+        </button>
+        <button id="pending-tasks" class="filter-btn" onclick="filterTasks('pending')">
+          ⏳ Pending
+        </button>
+        <button id="completed-tasks" class="filter-btn" onclick="filterTasks('completed')">
+          ✅ Completed
+        </button>
+      </div>
+
+      <!-- Task Statistics -->
+      <div class="task-stats">
+        <div class="stat-item">
+          <span class="stat-label">Total:</span>
+          <span id="total-count" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Completed:</span>
+          <span id="completed-count" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Pending:</span>
+          <span id="pending-count" class="stat-value">0</span>
+        </div>
+      </div>
+
+      <ul id="todo-list">
+        <!-- Tasks will appear here -->
+      </ul>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right">
+      <!-- Input Fields -->
+      <div class="input-section">
+        <input id="task-input" type="text" placeholder="Enter Topic (Required)" required aria-label="Task topic" />
+        <input id="task-date" type="date" required aria-label="Task date" />
+        <input id="task-start-time" type="time" placeholder="Start Time" required aria-label="Start time" />
+        <input id="task-end-time" type="time" placeholder="End Time" required aria-label="End time" />
+        <button type="button" onclick="addTask()" aria-label="Add new task">➕ Add Task</button>
+      </div>
+
+      <!-- Task Output + Timer -->
+      <div class="task-section">
+        <h4>📝 Task Output Area</h4>
+        <div class="timer-controls">
+          <span id="timer">00:00:00</span>
+          <div class="timer-buttons">
+            <button onclick="startTimer()">Start</button>
+            <button onclick="stopTimer()">Stop</button>
+            <button onclick="resetTimer()">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Motivation -->
+      <div id="quote-box" class="motivation" onclick="showQuote()">
+        🔁 Click here to get a motivational quote!
+      </div>
+
+      <!-- Navigation -->
+      <div class="navigation-section">
+        <button onclick="window.location.href='notes.html'" class="nav-btn">
+          📝 Open Notes Page
+        </button>
+        <button onclick="window.location.href='diary.html'" class="nav-btn">
+          📖 Open Diary Page
+        </button>
+        <button onclick="window.open('admin/admin-login.html', '_blank')" class="nav-btn admin-btn">
+          👨‍💼 Admin Panel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notice Board and Feedback Section -->
+  <div class="bottom-section">
+    <div class="notice-board">
+      <h3>📢 Notice Board</h3>
+      <div class="notice-content">
+        <div class="notice-item">
+          <span class="notice-date">📅 15 Dec 2024</span>
+          <p>🎉 New features added! Timer with motivational messages, task completion tracking, and improved UI!</p>
+        </div>
+        <div class="notice-item">
+          <span class="notice-date">📅 14 Dec 2024</span>
+          <p>📝 Diary feature now available! Save your daily thoughts and experiences.</p>
+        </div>
+        <div class="notice-item">
+          <span class="notice-date">📅 13 Dec 2024</span>
+          <p>📋 Notes feature added! Create and manage your study notes easily.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="feedback-form">
+      <h3>💬 Feedback Form</h3>
+      <form id="feedbackForm">
+        <div class="form-group">
+          <label for="feedbackName">Name:</label>
+          <input type="text" id="feedbackName" name="name" placeholder="Your name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="feedbackEmail">Email:</label>
+          <input type="email" id="feedbackEmail" name="email" placeholder="your.email@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="feedbackType">Feedback Type:</label>
+          <select id="feedbackType" name="type" required>
+            <option value="">Select type</option>
+            <option value="suggestion">💡 Suggestion</option>
+            <option value="bug">🐛 Bug Report</option>
+            <option value="feature">✨ Feature Request</option>
+            <option value="compliment">🌟 Compliment</option>
+            <option value="other">📝 Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="feedbackMessage">Message:</label>
+          <textarea id="feedbackMessage" name="message"
+            placeholder="Share your thoughts, suggestions, or report any issues..." rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="feedbackRating">Rating:</label>
+          <div class="rating-stars">
+            <input type="radio" id="star5" name="rating" value="5">
+            <label for="star5">⭐</label>
+            <input type="radio" id="star4" name="rating" value="4">
+            <label for="star4">⭐</label>
+            <input type="radio" id="star3" name="rating" value="3">
+            <label for="star3">⭐</label>
+            <input type="radio" id="star2" name="rating" value="2">
+            <label for="star2">⭐</label>
+            <input type="radio" id="star1" name="rating" value="1">
+            <label for="star1">⭐</label>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">📤 Submit Feedback</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

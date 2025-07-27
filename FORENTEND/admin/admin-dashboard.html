@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Study Tracker</title>
+  <link rel="stylesheet" href="admin-dashboard.css">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="header-content">
+      <h1>👨‍💼 Admin Dashboard</h1>
+      <div class="admin-info">
+        <span id="adminUsername">Admin</span>
+        <button id="logoutBtn" class="logout-btn">🚪 Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <!-- Navigation Tabs -->
+    <div class="tab-navigation">
+      <button class="tab-btn active" data-tab="notices">📢 Notice Board</button>
+      <button class="tab-btn" data-tab="feedback">💬 Feedback</button>
+      <button class="tab-btn" data-tab="stats">📊 Statistics</button>
+    </div>
+
+    <!-- Notice Board Management -->
+    <div id="notices" class="tab-content active">
+      <div class="content-header">
+        <h2>📢 Notice Board Management</h2>
+        <button id="addNoticeBtn" class="action-btn">➕ Add New Notice</button>
+      </div>
+
+      <div class="notices-container">
+        <div id="noticesList" class="notices-list">
+          <!-- Notices will be loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Management -->
+    <div id="feedback" class="tab-content">
+      <div class="content-header">
+        <h2>💬 Feedback Management</h2>
+        <div class="feedback-filters">
+          <select id="feedbackFilter">
+            <option value="all">All Feedback</option>
+            <option value="suggestion">💡 Suggestions</option>
+            <option value="bug">🐛 Bug Reports</option>
+            <option value="feature">✨ Feature Requests</option>
+            <option value="compliment">🌟 Compliments</option>
+            <option value="other">📝 Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="feedback-container">
+        <div id="feedbackList" class="feedback-list">
+          <!-- Feedback will be loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics -->
+    <div id="stats" class="tab-content">
+      <div class="content-header">
+        <h2>📊 Dashboard Statistics</h2>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>📢 Total Notices</h3>
+          <div id="totalNotices" class="stat-number">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>💬 Total Feedback</h3>
+          <div id="totalFeedback" class="stat-number">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>⭐ Average Rating</h3>
+          <div id="avgRating" class="stat-number">0.0</div>
+        </div>
+        <div class="stat-card">
+          <h3>👥 Active Users</h3>
+          <div id="activeUsers" class="stat-number">0</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add Notice Modal -->
+  <div id="noticeModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>➕ Add New Notice</h3>
+        <button class="close-btn" id="closeNoticeModal">&times;</button>
+      </div>
+      <form id="addNoticeForm">
+        <div class="form-group">
+          <label for="noticeDate">Date:</label>
+          <input type="date" id="noticeDate" required>
+        </div>
+        <div class="form-group">
+          <label for="noticeMessage">Message:</label>
+          <textarea id="noticeMessage" placeholder="Enter notice message..." rows="4" required></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" id="cancelNotice">Cancel</button>
+          <button type="submit" class="submit-btn">Add Notice</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reply Feedback Modal -->
+  <div id="replyModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>💬 Reply to Feedback</h3>
+        <button class="close-btn" id="closeReplyModal">&times;</button>
+      </div>
+      <div id="feedbackDetails" class="feedback-details">
+        <!-- Feedback details will be shown here -->
+      </div>
+      <form id="replyForm">
+        <div class="form-group">
+          <label for="replyMessage">Reply:</label>
+          <textarea id="replyMessage" placeholder="Enter your reply..." rows="4" required></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" id="cancelReply">Cancel</button>
+          <button type="submit" class="submit-btn">Send Reply</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="admin-dashboard.js"></script>
+</body>
+
+</html>
