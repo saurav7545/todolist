@@ -267,6 +267,19 @@ body {
   align-items: end;
 }
 
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
 .input-section input,
 .input-section button {
   padding: 12px 15px;
@@ -274,6 +287,35 @@ body {
   border-radius: 8px;
   font-size: 14px;
   transition: all 0.3s ease;
+}
+
+/* Custom placeholder for date and time inputs */
+.input-section input[type="date"]:not([value]),
+.input-section input[type="time"]:not([value]) {
+  color: transparent;
+  position: relative;
+}
+
+.input-section input[type="date"]:not([value])::before,
+.input-section input[type="time"]:not([value])::before {
+  content: attr(placeholder);
+  color: #6c757d;
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 14px;
+}
+
+.input-section input[type="date"]:focus:not([value])::before,
+.input-section input[type="time"]:focus:not([value])::before {
+  display: none;
+}
+
+.input-section input[type="date"]:not([value]):focus,
+.input-section input[type="time"]:not([value]):focus {
+  color: #495057;
 }
 
 .input-section input:focus {
@@ -687,15 +729,285 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
   .container {
     flex-direction: column;
-    margin: 10px;
+    margin: 5px;
+    min-height: auto;
   }
 
   .left {
     width: 100%;
     border-right: none;
     border-bottom: 2px solid #e9ecef;
+    padding: 20px;
+  }
+
+  .left h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+  }
+
+  .date-time-display {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  .current-date {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  .current-time {
+    font-size: 1.1rem;
+    padding: 10px 15px;
+  }
+
+  .task-filters {
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+
+  .filter-btn {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+    min-width: auto;
+  }
+
+  .task-stats {
+    padding: 12px;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .stat-value {
+    font-size: 1.1rem;
+    padding: 5px 8px;
+  }
+
+  .right {
+    padding: 20px;
+  }
+
+  .input-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .input-group {
+    gap: 8px;
+  }
+
+  .input-group label {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .input-section input,
+  .input-section button {
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+
+  .input-section input[type="date"],
+  .input-section input[type="time"] {
+    font-size: 16px;
+    padding: 15px;
+    min-height: 50px;
+  }
+
+  .input-section button {
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .task-section {
+    padding: 20px;
+  }
+
+  .task-section h4 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+
+  .timer-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .timer-buttons {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .timer-buttons button {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  #timer {
+    font-size: 1.8rem;
+    min-width: auto;
+    padding: 15px;
+    text-align: center;
+  }
+
+  .motivation {
+    padding: 20px;
+    font-size: 16px;
+    margin: 20px 0;
+  }
+
+  .navigation-section {
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .nav-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+  }
+
+  .logout-btn {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  /* Bottom section responsive */
+  .bottom-section {
+    flex-direction: column;
+    gap: 25px;
+    padding: 0 15px;
+    margin-top: 30px;
+  }
+
+  .notice-board,
+  .feedback-form {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .notice-board h3,
+  .feedback-form h3 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+
+  .notice-content {
+    max-height: 250px;
+  }
+
+  .notice-item {
+    padding: 15px;
+    margin-bottom: 10px;
+  }
+
+  .notice-item p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px;
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  .form-group textarea {
+    min-height: 100px;
+  }
+
+  .rating-stars label {
+    font-size: 24px;
+    margin: 0 5px;
+  }
+
+  .submit-btn {
+    padding: 15px 25px;
+    font-size: 16px;
+    width: 100%;
+  }
+
+  /* Task items mobile styling */
+  .task-item {
+    margin-bottom: 12px;
+    padding: 15px;
+  }
+
+  .task-content {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .task-text {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .task-datetime {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .task-date,
+  .task-time {
+    font-size: 14px;
+  }
+
+  .task-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .complete-btn,
+  .delete-btn {
+    padding: 10px 15px;
+    font-size: 14px;
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 5px;
+  }
+
+  .container {
+    margin: 2px;
+    border-radius: 10px;
+  }
+
+  .left,
+  .right {
+    padding: 15px;
+  }
+
+  .left h3 {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
   }
 
   .date-time-display {
@@ -708,7 +1020,7 @@ body {
 
   .current-time {
     font-size: 1rem;
-    padding: 6px 10px;
+    padding: 8px 12px;
   }
 
   .task-filters {
@@ -717,7 +1029,7 @@ body {
 
   .filter-btn {
     font-size: 0.8rem;
-    padding: 6px 10px;
+    padding: 8px 10px;
   }
 
   .task-stats {
@@ -727,132 +1039,167 @@ body {
 
   .stat-value {
     font-size: 1rem;
-    padding: 3px 6px;
+    padding: 4px 6px;
   }
 
   .input-section {
-    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .input-section input,
+  .input-section button {
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .input-section input[type="date"],
+  .input-section input[type="time"] {
+    min-height: 45px;
+  }
+
+  .task-section {
+    padding: 15px;
+  }
+
+  .task-section h4 {
+    font-size: 1.1rem;
   }
 
   .timer-controls {
-    flex-direction: column;
-    align-items: stretch;
+    gap: 12px;
   }
 
   .timer-buttons {
-    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .timer-buttons button {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 14px;
   }
 
   #timer {
     font-size: 1.5rem;
-    min-width: auto;
+    padding: 12px;
+  }
+
+  .motivation {
+    padding: 15px;
+    font-size: 14px;
+    margin: 15px 0;
   }
 
   .navigation-section {
-    flex-direction: column;
     gap: 10px;
   }
 
   .nav-btn {
-    width: 100%;
+    padding: 12px;
+    font-size: 14px;
   }
 
-  /* Bottom section responsive */
-  .bottom-section {
+  .logout-btn {
+    padding: 10px 15px;
+    font-size: 12px;
+  }
+
+  /* Task items for very small screens */
+  .task-item {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+
+  .task-content {
+    gap: 8px;
+  }
+
+  .task-text {
+    font-size: 15px;
+  }
+
+  .task-datetime {
+    gap: 4px;
+  }
+
+  .task-date,
+  .task-time {
+    font-size: 13px;
+  }
+
+  .task-actions {
     flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .complete-btn,
+  .delete-btn {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  /* Bottom section for very small screens */
+  .bottom-section {
+    margin-top: 20px;
+    padding: 0 8px;
     gap: 20px;
-    padding: 0 15px;
   }
 
   .notice-board,
   .feedback-form {
-    width: 100%;
+    padding: 15px;
+  }
+
+  .notice-board h3,
+  .feedback-form h3 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
   }
 
   .notice-content {
     max-height: 200px;
   }
 
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    font-size: 16px;
-    /* Prevent zoom on iOS */
-  }
-
-  .rating-stars label {
-    font-size: 20px;
-  }
-}
-
-@media (max-width: 480px) {
-  body {
-    padding: 10px;
-  }
-
-  .left,
-  .right {
-    padding: 20px;
-  }
-
-  .task-section {
-    padding: 20px;
-  }
-
-  .timer-buttons {
-    flex-direction: column;
-  }
-
-  .timer-buttons button {
-    width: 100%;
-  }
-
-  .task-actions {
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .complete-btn,
-  .delete-btn {
-    width: 100%;
-    padding: 8px 12px;
-  }
-
-  .logout-btn {
-    padding: 10px 20px;
-    font-size: 12px;
-  }
-
-  /* Bottom section for small screens */
-  .bottom-section {
-    margin-top: 20px;
-    padding: 0 10px;
-  }
-
-  .notice-board,
-  .feedback-form {
-    padding: 20px;
-  }
-
-  .notice-board h3,
-  .feedback-form h3 {
-    font-size: 18px;
-  }
-
   .notice-item {
-    padding: 12px;
+    padding: 10px;
+    margin-bottom: 8px;
   }
 
   .notice-item p {
-    font-size: 13px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
   }
 
   .form-group label {
     font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .form-group textarea {
+    min-height: 80px;
+  }
+
+  .rating-stars label {
+    font-size: 20px;
+    margin: 0 3px;
   }
 
   .submit-btn {
-    padding: 12px;
+    padding: 12px 20px;
     font-size: 14px;
   }
 }

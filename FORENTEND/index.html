@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Study Tracker</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -11,7 +11,7 @@
 <body>
   <!-- Logout Button -->
   <div class="logout-section">
-    <button id="logout-btn" class="logout-btn">
+    <button id="logout-btn" class="logout-btn" onclick="logout()">
       🚪 Logout
     </button>
   </div>
@@ -63,10 +63,23 @@
     <div class="right">
       <!-- Input Fields -->
       <div class="input-section">
-        <input id="task-input" type="text" placeholder="Enter Topic (Required)" required aria-label="Task topic" />
-        <input id="task-date" type="date" required aria-label="Task date" />
-        <input id="task-start-time" type="time" placeholder="Start Time" required aria-label="Start time" />
-        <input id="task-end-time" type="time" placeholder="End Time" required aria-label="End time" />
+        <div class="input-group">
+          <label for="task-input">📝 Topic:</label>
+          <input id="task-input" type="text" placeholder="Enter Topic (Required)" required aria-label="Task topic"
+            autocomplete="off" />
+        </div>
+        <div class="input-group">
+          <label for="task-date">📅 Date:</label>
+          <input id="task-date" type="date" required aria-label="Task date" />
+        </div>
+        <div class="input-group">
+          <label for="task-start-time">⏰ Start Time:</label>
+          <input id="task-start-time" type="time" required aria-label="Start time" />
+        </div>
+        <div class="input-group">
+          <label for="task-end-time">⏰ End Time:</label>
+          <input id="task-end-time" type="time" required aria-label="End time" />
+        </div>
         <button type="button" onclick="addTask()" aria-label="Add new task">➕ Add Task</button>
       </div>
 

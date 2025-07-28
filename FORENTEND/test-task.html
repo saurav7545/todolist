@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Task Adding Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .input-section {
+      margin-bottom: 20px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    input,
+    button {
+      margin: 5px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #todo-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .task-item {
+      border: 1px solid #ddd;
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+
+    .task-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .task-actions button {
+      margin: 0 5px;
+    }
+
+    .complete-btn {
+      background-color: #28a745;
+    }
+
+    .delete-btn {
+      background-color: #dc3545;
+    }
+
+    /* Mobile Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .input-section {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      input,
+      button {
+        padding: 15px;
+        font-size: 16px;
+        border-radius: 10px;
+      }
+
+      input[type="date"],
+      input[type="time"] {
+        min-height: 50px;
+      }
+
+      button {
+        padding: 15px 20px;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .task-item {
+        padding: 15px;
+        margin: 15px 0;
+      }
+
+      .task-content {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .task-actions {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .complete-btn,
+      .delete-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 5px;
+      }
+
+      .input-section {
+        gap: 10px;
+      }
+
+      input,
+      button {
+        padding: 12px;
+        font-size: 16px;
+      }
+
+      input[type="date"],
+      input[type="time"] {
+        min-height: 45px;
+      }
+
+      .task-item {
+        padding: 12px;
+        margin: 10px 0;
+      }
+
+      .task-content {
+        gap: 8px;
+      }
+
+      .task-actions {
+        gap: 6px;
+      }
+
+      .complete-btn,
+      .delete-btn {
+        padding: 10px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Task Adding Test</h1>
+
+  <div class="input-section">
+    <h3>Add New Task</h3>
+    <div class="input-group">
+      <label for="task-input">📝 Topic:</label>
+      <input id="task-input" type="text" placeholder="Enter Topic (Required)" required />
+    </div>
+    <div class="input-group">
+      <label for="task-date">📅 Date:</label>
+      <input id="task-date" type="date" required />
+    </div>
+    <div class="input-group">
+      <label for="task-start-time">⏰ Start Time:</label>
+      <input id="task-start-time" type="time" required />
+    </div>
+    <div class="input-group">
+      <label for="task-end-time">⏰ End Time:</label>
+      <input id="task-end-time" type="time" required />
+    </div>
+    <button type="button" onclick="addTask()">➕ Add Task</button>
+  </div>
+
+  <div>
+    <h3>Tasks List</h3>
+    <ul id="todo-list">
+      <!-- Tasks will appear here -->
+    </ul>
+  </div>
+
+  <script>
+    // Simplified addTask function for testing
+    function addTask() {
+      console.log("addTask function called");
+
+      const todoList = document.getElementById("todo-list");
+      const input = document.getElementById("task-input");
+      const dateInput = document.getElementById("task-date");
+      const startTimeInput = document.getElementById("task-start-time");
+      const endTimeInput = document.getElementById("task-end-time");
+
+      console.log("Elements found:", {
+        todoList: !!todoList,
+        input: !!input,
+        dateInput: !!dateInput,
+        startTimeInput: !!startTimeInput,
+        endTimeInput: !!endTimeInput
+      });
+
+      const taskText = input.value.trim();
+      const taskDate = dateInput.value;
+      const startTime = startTimeInput.value;
+      const endTime = endTimeInput.value;
+
+      console.log("Task data:", { taskText, taskDate, startTime, endTime });
+
+      // Validation - all fields are required
+      if (!taskText) {
+        alert("Please enter a topic!");
+        input.focus();
+        return;
+      }
+
+      if (!taskDate) {
+        alert("Please select a date!");
+        dateInput.focus();
+        return;
+      }
+
+      if (!startTime) {
+        alert("Please select start time!");
+        startTimeInput.focus();
+        return;
+      }
+
+      if (!endTime) {
+        alert("Please select end time!");
+        endTimeInput.focus();
+        return;
+      }
+
+      // Check if end time is after start time
+      if (startTime >= endTime) {
+        alert("End time must be after start time!");
+        endTimeInput.focus();
+        return;
+      }
+
+      // Format date for display
+      const formattedDate = new Date(taskDate).toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric'
+      });
+
+      // Create task item with date and time
+      const li = document.createElement("li");
+      li.className = "task-item";
+
+      li.innerHTML = `
+                <div class="task-content">
+                    <div class="task-text">${taskText}</div>
+                    <div class="task-datetime">
+                        <span class="task-date">📅 ${formattedDate}</span>
+                        <span class="task-time">🕐 ${startTime} - ${endTime}</span>
+                    </div>
+                    <div class="task-actions">
+                        <button class="complete-btn" onclick="toggleComplete(this)">
+                            ⏳ Mark Complete
+                        </button>
+                        <button class="delete-btn" onclick="deleteTask(this)">
+                            🗑️ Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+
+      // Store task data
+      li.dataset.completed = 'false';
+
+      // Right click to delete
+      li.oncontextmenu = (e) => {
+        e.preventDefault();
+        li.remove();
+      };
+
+      // Check if todoList exists before appending
+      if (todoList) {
+        todoList.appendChild(li);
+        console.log("Task added successfully to todo list");
+      } else {
+        console.error("Todo list element not found!");
+        alert("Error: Todo list element not found. Please refresh the page.");
+        return;
+      }
+
+      // Clear all inputs
+      input.value = "";
+      dateInput.value = "";
+      startTimeInput.value = "";
+      endTimeInput.value = "";
+
+      // Show success message
+      alert("✅ Task added successfully!");
+
+      console.log("addTask function completed successfully");
+    }
+
+    function toggleComplete(button) {
+      const taskItem = button.closest('.task-item');
+      const isCompleted = taskItem.dataset.completed === 'true';
+
+      taskItem.dataset.completed = !isCompleted;
+
+      if (!isCompleted) {
+        button.textContent = '✅ Completed';
+        button.style.backgroundColor = '#28a745';
+        taskItem.style.backgroundColor = '#d4edda';
+      } else {
+        button.textContent = '⏳ Mark Complete';
+        button.style.backgroundColor = '#ffc107';
+        taskItem.style.backgroundColor = '#f9f9f9';
+      }
+    }
+
+    function deleteTask(button) {
+      if (confirm('Are you sure you want to delete this task?')) {
+        button.closest('.task-item').remove();
+      }
+    }
+
+    // Set default date to today
+    function setDefaultDateTime() {
+      const today = new Date().toISOString().split('T')[0];
+      const currentTime = new Date().toTimeString().slice(0, 5);
+
+      const dateInput = document.getElementById('task-date');
+      const startTimeInput = document.getElementById('task-start-time');
+
+      if (dateInput) dateInput.value = today;
+      if (startTimeInput) startTimeInput.value = currentTime;
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', function () {
+      console.log("Page loaded, setting default date/time");
+      setDefaultDateTime();
+    });
+
+    // Add keyboard support for Enter key
+    document.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter' && e.target.id === 'task-input') {
+        addTask();
+      }
+    });
+  </script>
+</body>
+
+</html>

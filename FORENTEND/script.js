@@ -1,4 +1,3 @@
-const todoList = document.getElementById("todo-list");
 const quotes = [
   "Success is the sum of small efforts repeated daily. - सफलता रोज़ के छोटे प्रयासों का परिणाम है।",
   "Push yourself because no one else is going to do it for you.",
@@ -17,15 +16,27 @@ const quotes = [
 let timer, seconds = 0;
 
 function addTask() {
+  console.log("addTask function called");
+  const todoList = document.getElementById("todo-list");
   const input = document.getElementById("task-input");
   const dateInput = document.getElementById("task-date");
   const startTimeInput = document.getElementById("task-start-time");
   const endTimeInput = document.getElementById("task-end-time");
 
+  console.log("Elements found:", {
+    todoList: !!todoList,
+    input: !!input,
+    dateInput: !!dateInput,
+    startTimeInput: !!startTimeInput,
+    endTimeInput: !!endTimeInput
+  });
+
   const taskText = input.value.trim();
   const taskDate = dateInput.value;
   const startTime = startTimeInput.value;
   const endTime = endTimeInput.value;
+
+  console.log("Task data:", { taskText, taskDate, startTime, endTime });
 
   // Validation - all fields are required
   if (!taskText) {
@@ -97,7 +108,15 @@ function addTask() {
     li.remove();
   };
 
-  todoList.appendChild(li);
+  // Check if todoList exists before appending
+  if (todoList) {
+    todoList.appendChild(li);
+    console.log("Task added successfully to todo list");
+  } else {
+    console.error("Todo list element not found!");
+    alert("Error: Todo list element not found. Please refresh the page.");
+    return;
+  }
 
   // Clear all inputs
   input.value = "";
@@ -110,6 +129,8 @@ function addTask() {
 
   // Update task statistics
   updateTaskStats();
+
+  console.log("addTask function completed successfully");
 }
 
 function startTimer() {
@@ -172,11 +193,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Add logout button event listener
 document.addEventListener('DOMContentLoaded', function () {
+  console.log("DOMContentLoaded event fired");
   const logoutBtn = document.getElementById('logout-btn');
+  console.log("Logout button found:", !!logoutBtn);
   if (logoutBtn) {
+    console.log("Adding click event listener to logout button");
     logoutBtn.addEventListener('click', function () {
+      console.log("Logout button clicked!");
       logout();
     });
+  } else {
+    console.error("Logout button not found!");
   }
 
   // Set default date and time
@@ -432,20 +459,35 @@ function updateTaskStats() {
 
 // Check if user is logged in
 if (localStorage.getItem('isLoggedIn') !== 'true') {
-  window.location.href = 'login/login.html';
+  console.log("User not logged in, redirecting to login page");
+  // Temporarily bypass login for testing - remove this in production
+  console.log("Temporarily bypassing login for testing");
+  localStorage.setItem('isLoggedIn', 'true');
+  localStorage.setItem('currentUser', 'demo');
+  // window.location.href = 'login/login.html';
+} else {
+  console.log("User is logged in, proceeding with application");
 }
 
 // Logout function
 function logout() {
+  console.log("Logout function called");
+  alert("Logout function is working!");
+
   if (confirm('Are you sure you want to logout?')) {
+    console.log("User confirmed logout");
     // Clear all localStorage data
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('currentUser');
     localStorage.removeItem('notes');
     localStorage.removeItem('diaryEntries');
+    console.log("LocalStorage cleared");
 
     // Redirect to login page
+    console.log("Redirecting to login page");
     window.location.href = 'login/login.html';
+  } else {
+    console.log("User cancelled logout");
   }
 }
 
