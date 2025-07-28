@@ -300,11 +300,16 @@
         return;
       }
 
-      // Clear all inputs
+      // Clear only topic input, keep date and time with default values
       input.value = "";
-      dateInput.value = "";
-      startTimeInput.value = "";
-      endTimeInput.value = "";
+
+      // Set default date and time for next task
+      const today = new Date().toISOString().split('T')[0];
+      const currentTime = new Date().toTimeString().slice(0, 5);
+
+      dateInput.value = today;
+      startTimeInput.value = currentTime;
+      endTimeInput.value = ""; // Keep end time empty for user to select
 
       // Show success message
       alert("✅ Task added successfully!");

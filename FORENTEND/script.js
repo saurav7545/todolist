@@ -118,11 +118,19 @@ function addTask() {
     return;
   }
 
-  // Clear all inputs
+  // Clear only topic input, keep date and time with default values
   input.value = "";
-  dateInput.value = "";
-  startTimeInput.value = "";
-  endTimeInput.value = "";
+
+  // Set default date and time for next task
+  const today = new Date().toISOString().split('T')[0];
+  const currentTime = new Date().toTimeString().slice(0, 5);
+
+  dateInput.value = today;
+  startTimeInput.value = currentTime;
+  endTimeInput.value = ""; // Keep end time empty for user to select
+
+  // Update labels and readable inputs
+  updateInputLabels();
 
   // Show success message
   showTaskAddedMessage();
@@ -220,6 +228,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Load dynamic notices
   loadDynamicNotices();
+
+  // Add event listeners for date and time inputs to update labels
+  const dateInput = document.getElementById('task-date');
+  const startTimeInput = document.getElementById('task-start-time');
+  const endTimeInput = document.getElementById('task-end-time');
+
+  if (dateInput) {
+    dateInput.addEventListener('change', updateInputLabels);
+  }
+  if (startTimeInput) {
+    startTimeInput.addEventListener('change', updateInputLabels);
+  }
+  if (endTimeInput) {
+    endTimeInput.addEventListener('change', updateInputLabels);
+  }
 });
 
 // Function to update date and time
@@ -268,6 +291,82 @@ function setDefaultDateTime() {
 
   if (dateInput) dateInput.value = today;
   if (startTimeInput) startTimeInput.value = currentTime;
+
+  // Update labels and readable inputs
+  updateInputLabels();
+  updateReadableInputs();
+}
+
+// Function to update input labels with readable format
+function updateInputLabels() {
+  const dateInput = document.getElementById('task-date');
+  const startTimeInput = document.getElementById('task-start-time');
+  const endTimeInput = document.getElementById('task-end-time');
+
+  // Reset labels to default
+  const dateLabel = document.querySelector('label[for="task-date"]');
+  const startTimeLabel = document.querySelector('label[for="task-start-time"]');
+  const endTimeLabel = document.querySelector('label[for="task-end-time"]');
+
+  if (dateLabel) dateLabel.textContent = '📅 Date:';
+  if (startTimeLabel) startTimeLabel.textContent = '⏰ Start Time:';
+  if (endTimeLabel) endTimeLabel.textContent = '⏰ End Time:';
+
+  // Update readable format in inputs
+  updateReadableInputs();
+}
+
+// Function to update readable format in date/time inputs
+function updateReadableInputs() {
+  const dateInput = document.getElementById('task-date');
+  const startTimeInput = document.getElementById('task-start-time');
+  const endTimeInput = document.getElementById('task-end-time');
+
+  // Update date input - show readable format in placeholder
+  if (dateInput && dateInput.value) {
+    const readableDate = new Date(dateInput.value).toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
+    });
+    dateInput.setAttribute('placeholder', readableDate);
+    dateInput.style.color = '#495057';
+  } else if (dateInput) {
+    dateInput.setAttribute('placeholder', 'Select Date');
+    dateInput.style.color = '#6c757d';
+  }
+
+  // Update start time input - show readable format in placeholder
+  if (startTimeInput && startTimeInput.value) {
+    const time = startTimeInput.value;
+    const [hours, minutes] = time.split(':');
+    const readableTime = new Date(2000, 0, 1, hours, minutes).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+    startTimeInput.setAttribute('placeholder', readableTime);
+    startTimeInput.style.color = '#495057';
+  } else if (startTimeInput) {
+    startTimeInput.setAttribute('placeholder', 'Select Start Time');
+    startTimeInput.style.color = '#6c757d';
+  }
+
+  // Update end time input - show readable format in placeholder
+  if (endTimeInput && endTimeInput.value) {
+    const time = endTimeInput.value;
+    const [hours, minutes] = time.split(':');
+    const readableTime = new Date(2000, 0, 1, hours, minutes).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+    endTimeInput.setAttribute('placeholder', readableTime);
+    endTimeInput.style.color = '#495057';
+  } else if (endTimeInput) {
+    endTimeInput.setAttribute('placeholder', 'Select End Time');
+    endTimeInput.style.color = '#6c757d';
+  }
 }
 
 // Show success message when task is added

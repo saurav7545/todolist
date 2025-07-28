@@ -289,33 +289,21 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Custom placeholder for date and time inputs */
-.input-section input[type="date"]:not([value]),
-.input-section input[type="time"]:not([value]) {
-  color: transparent;
+/* Custom styling for date and time inputs */
+.input-section input[type="date"],
+.input-section input[type="time"] {
   position: relative;
-}
-
-.input-section input[type="date"]:not([value])::before,
-.input-section input[type="time"]:not([value])::before {
-  content: attr(placeholder);
-  color: #6c757d;
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  font-size: 14px;
-}
-
-.input-section input[type="date"]:focus:not([value])::before,
-.input-section input[type="time"]:focus:not([value])::before {
-  display: none;
-}
-
-.input-section input[type="date"]:not([value]):focus,
-.input-section input[type="time"]:not([value]):focus {
   color: #495057;
+  font-weight: 500;
+  background: white;
+}
+
+/* Placeholder styling for date and time inputs */
+.input-section input[type="date"]::placeholder,
+.input-section input[type="time"]::placeholder {
+  color: #6c757d;
+  font-style: italic;
+  font-weight: 400;
 }
 
 .input-section input:focus {
@@ -801,11 +789,14 @@ body {
 
   .input-group {
     gap: 8px;
+    margin-bottom: 15px;
   }
 
   .input-group label {
     font-size: 16px;
     font-weight: 600;
+    margin-bottom: 5px;
+    color: #495057;
   }
 
   .input-section input,
@@ -820,6 +811,13 @@ body {
     font-size: 16px;
     padding: 15px;
     min-height: 50px;
+    position: relative;
+  }
+
+  .input-section input[type="date"]::placeholder,
+  .input-section input[type="time"]::placeholder {
+    font-size: 16px;
+    color: #6c757d;
   }
 
   .input-section button {
