@@ -96,8 +96,8 @@ TODO-LIST/
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd TODO-LIST
+   git clone https://github.com/saurav7545/todolist.git
+   cd todolist
    ```
 
 2. Open the application:
