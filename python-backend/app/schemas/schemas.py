@@ -96,6 +96,47 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+class UserRegistration(BaseModel):
+    username: str = Field(..., min_length=3, max_length=30)
+    email: EmailStr = Field(...)
+    password: str = Field(..., min_length=6)
+    first_name: str = Field(..., min_length=1, max_length=50)
+    last_name: str = Field(..., min_length=1, max_length=50)
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "username": "testuser",
+                "email": "test@example.com",
+                "password": "password123",
+                "first_name": "Test",
+                "last_name": "User"
+            }
+        }
+    email: EmailStr
+    password: str = Field(..., min_length=6)
+    first_name: str = Field(..., max_length=50)
+    last_name: str = Field(..., max_length=50)
+
+class UserLoginWithOTP(BaseModel):
+    email: EmailStr
+    password: str
+    otp_code: str = Field(..., min_length=6, max_length=6)
+
+# OTP schemas
+class OTPRequest(BaseModel):
+    email: EmailStr
+    otp_type: str = Field(..., max_length=20)  # "registration", "login", "password_reset"
+
+class OTPVerification(BaseModel):
+    email: EmailStr
+    otp_code: str = Field(..., min_length=6, max_length=6)
+
+class OTPResponse(BaseModel):
+    message: str
+    expires_in: int  # seconds
+    email: str
+
 class Token(BaseModel):
     access_token: str
     refresh_token: str

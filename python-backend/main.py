@@ -6,6 +6,7 @@ import uvicorn
 from motor.motor_asyncio import AsyncIOMotorClient
 from contextlib import asynccontextmanager
 import os
+import logging
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -15,6 +16,9 @@ load_dotenv()
 from app.routers import auth, tasks, notes, diary, feedback, notices, admin
 from app.core.config import settings
 from app.core.database import connect_to_mongo, close_mongo_connection
+from app.middleware.rate_limit import RateLimitMiddleware
+from app.middleware.logging import LoggingMiddleware, SecurityHeadersMiddleware
+from app.middleware.exception_handler import ExceptionHandlerMiddleware
 
 # Security
 security = HTTPBearer()
@@ -27,6 +31,12 @@ async def lifespan(app: FastAPI):
     # Shutdown
     await close_mongo_connection()
 
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
 # Create FastAPI app
 app = FastAPI(
     title="Study Tracker API",
@@ -34,7 +44,8 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
-    lifespan=lifespan
+    lifespan=lifespan,
+    debug=True  # Enable debug mode
 )
 
 # CORS middleware
@@ -51,6 +62,12 @@ app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=settings.ALLOWED_HOSTS
 )
+
+# Add custom middleware
+app.add_middleware(ExceptionHandlerMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(LoggingMiddleware)
+app.add_middleware(RateLimitMiddleware)
 
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])

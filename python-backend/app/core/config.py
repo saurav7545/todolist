@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     PORT: int = 8000
     
     # Database settings
-    MONGODB_URL: str = "mongodb://localhost:27017"
+    MONGODB_URL: str = "mongodb+srv://saurav7545:saurav7545@cluster0.iw9giuy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
     DATABASE_NAME: str = "study_tracker"
     
     # Security settings
@@ -43,10 +43,11 @@ class Settings(BaseSettings):
     ]
     
     # Email settings (optional)
-    SMTP_HOST: str = "smtp.gmail.com"
-    SMTP_PORT: int = 587
+    SMTP_SERVER: str = "smtp.gmail.com"  # Changed from SMTP_HOST
+    SMTP_PORT: int = 465  # Changed to SSL port
     SMTP_USER: str = ""
     SMTP_PASSWORD: str = ""
+    FROM_EMAIL: str = ""  # Added FROM_EMAIL field
     
     # Rate limiting
     RATE_LIMIT_REQUESTS: int = 100

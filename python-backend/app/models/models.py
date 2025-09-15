@@ -36,12 +36,16 @@ class User(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     username: str = Field(..., min_length=3, max_length=30)
     email: str = Field(..., max_length=255)
-    password: str = Field(..., min_length=6)
+    password_hash: str = Field(..., alias="passwordHash")
     first_name: str = Field(..., max_length=50)
     last_name: str = Field(..., max_length=50)
     avatar: Optional[str] = None
     role: UserRole = UserRole.USER
-    is_active: bool = True
+    is_active: bool = False  # Changed to False - requires email verification
+    is_email_verified: bool = False  # New field for email verification
+    email_verification_token: Optional[str] = None  # New field for verification token
+    otp_code: Optional[str] = None  # New field for OTP
+    otp_expires_at: Optional[datetime] = None  # New field for OTP expiry
     last_login: Optional[datetime] = None
     preferences: UserPreferences = UserPreferences()
     study_stats: StudyStats = StudyStats()
@@ -160,6 +164,23 @@ class Notice(BaseModel):
     views: List[Dict[str, Any]] = []
     is_pinned: bool = False
     tags: List[str] = []
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    class Config:
+        populate_by_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+class OTPVerification(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    email: str = Field(..., max_length=255)
+    otp_code: str = Field(..., max_length=6)
+    otp_type: str = Field(..., max_length=20)  # "registration", "login", "password_reset"
+    is_used: bool = False
+    expires_at: datetime = Field(..., alias="expiresAt")
+    attempts: int = 0
+    max_attempts: int = 3
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
