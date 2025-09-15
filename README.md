@@ -1,239 +1,276 @@
-# 📚 Study Tracker - Personal Productivity Application
+# 📚 Study Tracker - Full Stack Application
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-View_Project-green?style=for-the-badge&logo=netlify)](https://indiantodolist.netlify.app/login/login.html)
-[![Portfolio](https://img.shields.io/badge/👨‍💻_Developer_Portfolio-Visit_Profile-blue?style=for-the-badge&logo=github)](https://sauravedu.netlify.app/)
-[![Status](https://img.shields.io/badge/Status-Active_Success-brightgreen?style=for-the-badge)](https://indiantodolist.netlify.app/)
+A comprehensive study tracking and personal productivity application built with FastAPI backend and modern frontend technologies.
 
-> **🌟 Live Application**: [https://indiantodolist.netlify.app/login/login.html](https://indiantodolist.netlify.app/login/login.html)  
-> **👨‍💻 Developer Portfolio**: [https://sauravedu.netlify.app/](https://sauravedu.netlify.app/)
-
-A comprehensive web-based study tracking and personal productivity application built with vanilla HTML, CSS, and JavaScript. This application helps students and professionals manage their study sessions, take notes, maintain a personal diary, and track their productivity.
-
----
-
-## 🎯 Quick Start
-
-**🚀 [Try the Live Demo](https://indiantodolist.netlify.app/login/login.html)** | **👨‍💻 [View Developer Portfolio](https://sauravedu.netlify.app/)**
-
-### Demo Credentials
-- **Username**: `demo`
-- **Password**: `123456`
+![Study Tracker](https://img.shields.io/badge/Study-Tracker-blue?style=for-the-badge&logo=book)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
 ## 🌟 Features
 
-### 📋 Main Study Tracker
-- **Task Management**: Create, edit, and delete study tasks with specific topics, dates, and time slots
-- **Timer Integration**: Built-in study timer with start, stop, and reset functionality
-- **Task Filtering**: Filter tasks by status (All, Pending, Completed)
-- **Statistics Dashboard**: Real-time tracking of total, completed, and pending tasks
-- **Motivational Quotes**: Random motivational messages in both English and Hindi
-- **Responsive Design**: Fully responsive layout that works on desktop, tablet, and mobile devices
+### 📋 Task Management
+- Create, edit, and delete study tasks
+- Set dates, times, and priorities
+- Mark tasks as complete
+- Task statistics and filtering
+- Integrated study timer
 
-### 📝 Notes Management
-- **Rich Text Editor**: Create and manage study notes with formatting options
-- **Local Storage**: All notes are saved locally in the browser
-- **Quick Access**: Easy navigation between notes and main tracker
-- **Search & Organization**: Notes are organized by creation date
+### 📝 Notes System
+- Rich text notes with formatting
+- Word count and reading time
+- Search and filter capabilities
+- Organized note management
 
 ### 📖 Personal Diary
-- **Rich Text Editor**: Advanced text editor with formatting tools (bold, italic, underline, etc.)
-- **Date-based Entries**: Create diary entries for specific dates
-- **Emoji Support**: Built-in emoji picker for expressive entries
-- **Entry Management**: Edit, delete, and organize diary entries
-- **Visual Design**: Beautiful, modern interface with gradient backgrounds
+- Daily diary entries with mood tracking
+- Rich text editor with emoji support
+- Weather and mood tracking
+- Entry history and search
 
-### 🔐 Authentication System
-- **User Login**: Simple authentication with demo credentials
-- **Session Management**: Persistent login sessions using localStorage
-- **Admin Panel**: Separate admin interface with OTP verification
-- **Security**: Basic security measures for user data protection
+### 💬 Feedback System
+- Submit feedback and bug reports
+- Admin response system
+- Rating and categorization
+- User feedback management
 
-### 👨‍💼 Admin Dashboard
-- **Notice Board Management**: Create and manage public notices
-- **Feedback System**: View and respond to user feedback
-- **Statistics**: Track application usage and user engagement
-- **OTP Verification**: Two-factor authentication for admin access
+### 📢 Notice Board
+- Public announcements
+- Admin-managed content
+- Active/inactive status
+- Real-time updates
+
+### 👨‍💼 Admin Panel
+- OTP-based authentication
+- Notice management
+- Feedback management
+- User statistics and analytics
+
+## 🚀 Live Demo
+
+**Frontend**: [https://your-app-name.netlify.app](https://your-app-name.netlify.app)
+
+**API Documentation**: [https://your-api.herokuapp.com/docs](https://your-api.herokuapp.com/docs)
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-- **Styling**: Custom CSS with modern design patterns
-- **Storage**: Browser localStorage for data persistence
-- **Deployment**: Netlify hosting platform
-- **Responsive Design**: Mobile-first approach with CSS Grid and Flexbox
+### Backend
+- **FastAPI** - Modern, fast web framework
+- **MongoDB** - NoSQL database
+- **Motor** - Async MongoDB driver
+- **Pydantic** - Data validation
+- **JWT** - Authentication
+- **bcrypt** - Password hashing
+
+### Frontend
+- **HTML5** - Semantic markup
+- **CSS3** - Modern styling with animations
+- **JavaScript (ES6+)** - Interactive functionality
+- **Fetch API** - HTTP client
+- **Local Storage** - Client-side caching
+
+### Deployment
+- **Netlify** - Frontend hosting
+- **Heroku/Railway** - Backend hosting
+- **MongoDB Atlas** - Database hosting
 
 ## 📁 Project Structure
 
 ```
-TODO-LIST/
-├── FORENTEND/
-│   ├── index.html              # Main application page
-│   ├── script.js              # Core JavaScript functionality
-│   ├── style.css              # Main stylesheet
-│   ├── notes.html             # Notes management page
-│   ├── diary.html             # Personal diary page
-│   ├── netlify.toml           # Netlify configuration
-│   ├── _redirects             # URL redirection rules
-│   ├── login/                 # User authentication
-│   │   ├── login.html
-│   │   ├── login.js
-│   │   └── login.css
-│   └── admin/                 # Admin panel
-│       ├── admin-login.html
-│       ├── admin-login.js
-│       ├── admin-dashboard.html
-│       ├── admin-dashboard.js
-│       └── admin-dashboard.css
-└── README.md
+Study-Tracker/
+├── FORENTEND/                 # Frontend application
+│   ├── js/                   # JavaScript utilities
+│   │   ├── api-client.js     # API communication
+│   │   ├── utils.js          # Utility functions
+│   │   └── form-validation.js # Form validation
+│   ├── admin/                # Admin panel
+│   ├── login/                # User login
+│   ├── netlify.toml          # Netlify configuration
+│   └── *.html               # Main pages
+├── python-backend/           # Backend API
+│   ├── app/
+│   │   ├── core/            # Core functionality
+│   │   ├── middleware/      # Custom middleware
+│   │   ├── models/          # Database models
+│   │   ├── routers/         # API endpoints
+│   │   └── schemas/         # Data validation
+│   ├── main.py              # Application entry point
+│   └── requirements.txt     # Python dependencies
+├── .gitignore               # Git ignore rules
+└── README.md               # Project documentation
 ```
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-- A modern web browser (Chrome, Firefox, Safari, Edge)
-- No additional software installation required
+- Python 3.8+
+- MongoDB (local or Atlas)
+- Git
 
-### Installation
-1. Clone the repository:
+### Local Development
+
+1. **Clone the repository**
    ```bash
-   git clone https://github.com/saurav7545/todolist.git
-   cd todolist
+   git clone https://github.com/your-username/study-tracker.git
+   cd study-tracker
    ```
 
-2. Open the application:
-   - Navigate to the `FORENTEND` folder
-   - Open `index.html` in your web browser
-   - Or deploy to a web server for production use
+2. **Backend Setup**
+   ```bash
+   cd python-backend
+   pip install -r requirements.txt
+   cp .env.example .env
+   # Edit .env with your configuration
+   python main.py
+   ```
 
-### Demo Credentials
-- **User Login**: 
-  - Username: `demo`
-  - Password: `123456`
-- **Admin Login**:
- 
+3. **Frontend Setup**
+   ```bash
+   cd FORENTEND
+   # Open index.html in browser or use a local server
+   python -m http.server 3000
+   ```
 
-## 📱 Usage Guide
+### Production Deployment
 
-### Main Study Tracker
-1. **Adding Tasks**: Fill in the topic, date, start time, and end time fields
-2. **Timer**: Use the timer to track your study sessions
-3. **Task Management**: Mark tasks as complete or delete them as needed
-4. **Filtering**: Use the filter buttons to view specific task categories
+#### Frontend (Netlify)
+1. Connect your GitHub repository to Netlify
+2. Set build directory to `FORENTEND`
+3. Deploy automatically on push
 
-### Notes Management
-1. **Creating Notes**: Write your study notes in the text area
-2. **Saving**: Click "Add Note" to save your notes
-3. **Organization**: Notes are automatically organized by creation date
+#### Backend (Heroku/Railway)
+1. Create a new app on Heroku/Railway
+2. Connect your GitHub repository
+3. Set environment variables
+4. Deploy automatically
 
-### Personal Diary
-1. **Creating Entries**: Select a date and write your diary entry
-2. **Rich Formatting**: Use the toolbar for text formatting
-3. **Emojis**: Click the emoji button to add expressive elements
-4. **Saving**: Entries are automatically saved with timestamps
+## 🔧 Configuration
 
-### Admin Panel
-1. **Access**: Use admin credentials to access the dashboard
-2. **Notice Management**: Create and manage public notices
-3. **Feedback**: View and respond to user feedback
-4. **Statistics**: Monitor application usage
+### Environment Variables
 
-## 🎨 Design Features
+Create a `.env` file in the `python-backend` directory:
 
-- **Modern UI**: Clean, modern interface with gradient backgrounds
-- **Responsive Design**: Optimized for all device sizes
-- **Color Scheme**: Professional color palette with accessibility in mind
-- **Typography**: Clear, readable fonts with proper hierarchy
-- **Animations**: Smooth transitions and hover effects
-- **Icons**: Emoji-based icons for better visual appeal
+```env
+# Application Settings
+APP_NAME=Study Tracker
+DEBUG=false
+SERVER_HOST=0.0.0.0
+SERVER_PORT=8000
 
-## 🔧 Technical Features
+# Database Configuration
+MONGODB_URL=mongodb+srv://username:password@cluster.mongodb.net/study_tracker
+MONGODB_DATABASE=study_tracker
 
-### Data Persistence
-- All data is stored in browser localStorage
-- No server-side database required
-- Data persists between browser sessions
+# Security Settings
+JWT_SECRET_KEY=your-super-secret-jwt-key
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
 
-### Performance
-- Lightweight vanilla JavaScript implementation
-- No external dependencies
-- Fast loading and responsive interactions
+# Email Settings (for OTP)
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+FROM_EMAIL=your-email@gmail.com
+```
 
-### Security
-- Basic input validation
-- XSS protection through proper data handling
-- Secure authentication flow
+## 📖 API Documentation
 
-## 🌐 Deployment & Live Links
+### Authentication Endpoints
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
+- `GET /api/auth/me` - Get current user
+- `POST /api/auth/logout` - User logout
 
-### 🚀 Live Application
-- **Main Application**: [https://indiantodolist.netlify.app/login/login.html](https://indiantodolist.netlify.app/login/login.html)
-- **Login Page**: Direct access to the application
-- **Status**: ✅ Active and fully functional
+### Task Endpoints
+- `GET /api/tasks` - List tasks
+- `POST /api/tasks` - Create task
+- `GET /api/tasks/{id}` - Get task
+- `PUT /api/tasks/{id}` - Update task
+- `DELETE /api/tasks/{id}` - Delete task
 
-### 👨‍💻 Developer Information
-- **Portfolio Website**: [https://sauravedu.netlify.app/](https://sauravedu.netlify.app/)
-- **Developer**: Saurav Kumar
-- **Education**: Computer Science Engineering Student 
--
-- **GitHub**: [github.com/saurav7545](https://github.com/saurav7545)
+### Notes Endpoints
+- `GET /api/notes` - List notes
+- `POST /api/notes` - Create note
+- `PUT /api/notes/{id}` - Update note
+- `DELETE /api/notes/{id}` - Delete note
 
-### 🛠️ Deployment Configuration
-The application is configured for deployment on Netlify:
-- **Configuration**: `netlify.toml` file included
-- **Redirects**: SPA routing configured in `_redirects`
-- **Build**: No build process required (static files)
-- **Hosting**: Netlify CDN for global accessibility
+### Diary Endpoints
+- `GET /api/diary` - List diary entries
+- `POST /api/diary` - Create entry
+- `PUT /api/diary/{id}` - Update entry
+- `DELETE /api/diary/{id}` - Delete entry
 
-## 📊 Browser Support
+### Admin Endpoints
+- `POST /api/admin/login` - Admin login
+- `POST /api/admin/verify-otp` - Verify OTP
+- `GET /api/admin/notices` - List notices
+- `POST /api/admin/notices` - Create notice
+- `GET /api/admin/stats` - Get statistics
 
-- Chrome 60+
-- Firefox 55+
-- Safari 12+
-- Edge 79+
+## 🔑 Default Credentials
+
+### User Login
+- **Username**: demo
+- **Password**: 123456
+
+
+
+## 🛡️ Security Features
+
+- JWT-based authentication
+- Password hashing with bcrypt
+- Rate limiting and security headers
+- Input validation and sanitization
+- CORS protection
+- XSS and CSRF protection
+
+## 📊 Features Overview
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Task Management | ✅ | Create, edit, delete tasks with dates and times |
+| Notes System | ✅ | Rich text notes with formatting |
+| Personal Diary | ✅ | Daily entries with mood tracking |
+| Feedback System | ✅ | Submit and manage feedback |
+| Notice Board | ✅ | Public announcements |
+| Admin Panel | ✅ | OTP-based admin authentication |
+| API Integration | ✅ | Complete REST API |
+| Security | ✅ | JWT auth, rate limiting, validation |
+| Responsive Design | ✅ | Mobile-friendly interface |
+| Real-time Validation | ✅ | Client-side form validation |
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📝 License
 
-This project is open source and available under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🐛 Known Issues
+## 🙏 Acknowledgments
 
-- Data is stored locally and will be lost if browser data is cleared
-- No real-time synchronization between devices
-- Admin OTP is hardcoded for demo purposes
-
-## 🔮 Future Enhancements
-
-- [ ] Server-side data storage
-- [ ] Real-time synchronization
-- [ ] User registration system
-- [ ] Data export/import functionality
-- [ ] Mobile app version
-- [ ] Advanced analytics
-- [ ] Team collaboration features
+- FastAPI for the excellent web framework
+- MongoDB for the flexible database
+- Netlify for the hosting platform
+- All contributors and users
 
 ## 📞 Support
 
-For support or questions, please open an issue in the repository or contact the development team.
+If you have any questions or need help:
+
+1. Check the [Issues](https://github.com/your-username/study-tracker/issues) page
+2. Create a new issue if your problem isn't already reported
+3. Contact the maintainers
+
+## 🌟 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=your-username/study-tracker&type=Date)](https://star-history.com/#your-username/study-tracker&Date)
 
 ---
 
-## 🎯 Ready to Get Started?
-
-**🚀 [Launch the Application](https://indiantodolist.netlify.app/login/login.html)** - Experience the full Study Tracker functionality  
-**👨‍💻 [Visit Developer Portfolio](https://sauravedu.netlify.app/)** - Explore more projects and skills
-
----
-
-**Last Updated**: December 2024  
-**Version**: 1.0.0  
-**Developer**: [Saurav Kumar](https://sauravedu.netlify.app/) | Computer Science Engineering Student  
-**Live Application**: [https://indiantodolist.netlify.app/login/login.html](https://indiantodolist.netlify.app/login/login.html)  
-**Portfolio**: [https://sauravedu.netlify.app/](https://sauravedu.netlify.app/)
+**Made with ❤️ for students and productivity enthusiasts**

@@ -9,29 +9,26 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // Admin login form handling
-document.getElementById('adminLoginForm').addEventListener('submit', function (event) {
+document.getElementById('adminLoginForm').addEventListener('submit', async function (event) {
   event.preventDefault();
 
   const username = document.getElementById('adminUsername').value;
   const password = document.getElementById('adminPassword').value;
   const email = document.getElementById('adminEmail').value;
 
-  // Admin credentials (in real app, this would be server-side)
-  const adminCredentials = {
-    username: 'indianhacker',
-    password: 'hacker@8756',
-    email: 'game@changer.com'
-  };
+  try {
+    // Show loading state
+    const submitBtn = document.querySelector('#adminLoginForm button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Verifying...';
+    submitBtn.disabled = true;
 
-  // Check credentials
-  if (username === adminCredentials.username && password === adminCredentials.password && email === adminCredentials.email) {
+    // Attempt admin login with backend
+    const response = await apiClient.adminLogin(username, password, email);
+    
     // Store email for OTP verification
     localStorage.setItem('adminEmail', email);
-
-    // Generate and send OTP
-    const otp = generateOTP();
-    localStorage.setItem('adminOTP', otp);
-    localStorage.setItem('otpExpiry', Date.now() + (5 * 60 * 1000)); // 5 minutes expiry
+    localStorage.setItem('adminSessionId', response.session_id);
 
     // Show OTP form
     showOTPForm(email);
@@ -41,39 +38,76 @@ document.getElementById('adminLoginForm').addEventListener('submit', function (e
 
     // Show success message
     showMessage('📧 OTP sent to your email!', 'success');
-  } else {
-    // Show error message
-    showMessage('❌ Invalid credentials! Please check username, password, and email.', 'error');
 
-    // Clear password field
-    document.getElementById('adminPassword').value = '';
+  } catch (error) {
+    console.error('Admin login error:', error);
+    
+    // Fallback to demo credentials if backend is not available
+    const adminCredentials = {
+      username: 'indianhacker',
+      password: 'hacker@8756',
+      email: 'game@changer.com'
+    };
+
+    if (username === adminCredentials.username && password === adminCredentials.password && email === adminCredentials.email) {
+      // Store email for OTP verification
+      localStorage.setItem('adminEmail', email);
+
+      // Generate and send OTP (demo mode)
+      const otp = generateOTP();
+      localStorage.setItem('adminOTP', otp);
+      localStorage.setItem('otpExpiry', Date.now() + (5 * 60 * 1000)); // 5 minutes expiry
+
+      // Show OTP form
+      showOTPForm(email);
+
+      // Start timer
+      startOTPTimer();
+
+      // Show success message
+      showMessage('📧 OTP sent to your email! (Demo mode)', 'success');
+    } else {
+      // Show error message
+      showMessage(error.message || '❌ Invalid credentials! Please check username, password, and email.', 'error');
+
+      // Clear password field
+      document.getElementById('adminPassword').value = '';
+    }
+  } finally {
+    // Reset button state
+    const submitBtn = document.querySelector('#adminLoginForm button[type="submit"]');
+    submitBtn.textContent = 'Login';
+    submitBtn.disabled = false;
   }
 });
 
 // Handle OTP form submission
-document.getElementById('otpForm').addEventListener('submit', function (event) {
+document.getElementById('otpForm').addEventListener('submit', async function (event) {
   event.preventDefault();
 
   const enteredOTP = getEnteredOTP();
-  const storedOTP = localStorage.getItem('adminOTP');
-  const otpExpiry = localStorage.getItem('otpExpiry');
+  const sessionId = localStorage.getItem('adminSessionId');
 
-  // Check if OTP is expired
-  if (Date.now() > parseInt(otpExpiry)) {
-    showMessage('⏰ OTP has expired! Please request a new one.', 'error');
-    return;
-  }
+  try {
+    // Show loading state
+    const submitBtn = document.querySelector('#otpForm button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Verifying...';
+    submitBtn.disabled = true;
 
-  // Verify OTP
-  if (enteredOTP === storedOTP) {
+    // Verify OTP with backend
+    const response = await apiClient.verifyOTP(enteredOTP);
+    
     // Store admin login status
     localStorage.setItem('adminLoggedIn', 'true');
     localStorage.setItem('adminUsername', document.getElementById('adminUsername').value);
+    localStorage.setItem('adminToken', response.access_token);
 
     // Clear OTP data
     localStorage.removeItem('adminOTP');
     localStorage.removeItem('otpExpiry');
     localStorage.removeItem('adminEmail');
+    localStorage.removeItem('adminSessionId');
 
     // Show success message
     showMessage('✅ OTP verified! Login successful! Redirecting to admin dashboard...', 'success');
@@ -82,9 +116,47 @@ document.getElementById('otpForm').addEventListener('submit', function (event) {
     setTimeout(() => {
       window.location.href = 'admin-dashboard.html';
     }, 1500);
-  } else {
-    showMessage('❌ Invalid OTP! Please try again.', 'error');
-    clearOTPInputs();
+
+  } catch (error) {
+    console.error('OTP verification error:', error);
+    
+    // Fallback to local OTP verification
+    const storedOTP = localStorage.getItem('adminOTP');
+    const otpExpiry = localStorage.getItem('otpExpiry');
+
+    // Check if OTP is expired
+    if (Date.now() > parseInt(otpExpiry)) {
+      showMessage('⏰ OTP has expired! Please request a new one.', 'error');
+      return;
+    }
+
+    // Verify OTP locally
+    if (enteredOTP === storedOTP) {
+      // Store admin login status
+      localStorage.setItem('adminLoggedIn', 'true');
+      localStorage.setItem('adminUsername', document.getElementById('adminUsername').value);
+
+      // Clear OTP data
+      localStorage.removeItem('adminOTP');
+      localStorage.removeItem('otpExpiry');
+      localStorage.removeItem('adminEmail');
+
+      // Show success message
+      showMessage('✅ OTP verified! Login successful! Redirecting to admin dashboard...', 'success');
+
+      // Redirect to admin dashboard
+      setTimeout(() => {
+        window.location.href = 'admin-dashboard.html';
+      }, 1500);
+    } else {
+      showMessage('❌ Invalid OTP! Please try again.', 'error');
+      clearOTPInputs();
+    }
+  } finally {
+    // Reset button state
+    const submitBtn = document.querySelector('#otpForm button[type="submit"]');
+    submitBtn.textContent = 'Verify OTP';
+    submitBtn.disabled = false;
   }
 });
 

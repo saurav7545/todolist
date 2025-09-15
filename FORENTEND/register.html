@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register - Study Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="login/login.css">
+</head>
+
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <h1>📚 Study Tracker</h1>
+      <p>Create your account to start tracking your studies</p>
+    </div>
+
+    <div id="error-message" class="error-message"></div>
+    <div id="success-message" class="success-message"></div>
+
+    <!-- Registration Form -->
+    <form id="registrationForm" class="login-form">
+      <div class="form-group">
+        <label for="username" class="required">Username</label>
+        <input type="text" id="username" name="username" class="form-input" placeholder="Enter your username" required>
+        <div class="form-help">3-30 characters, letters, numbers, and underscores only</div>
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="required">Email</label>
+        <input type="email" id="email" name="email" class="form-input" placeholder="Enter your email" required>
+        <div class="form-help">We'll send you an OTP for verification</div>
+      </div>
+
+      <div class="form-group">
+        <label for="firstName" class="required">First Name</label>
+        <input type="text" id="firstName" name="first_name" class="form-input" placeholder="Enter your first name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="lastName" class="required">Last Name</label>
+        <input type="text" id="lastName" name="last_name" class="form-input" placeholder="Enter your last name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="required">Password</label>
+        <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" required>
+        <div class="form-help">At least 8 characters with uppercase, lowercase, number, and special character</div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword" class="required">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirm_password" class="form-input" placeholder="Confirm your password" required>
+      </div>
+
+      <button type="submit" class="login-btn">📧 Register & Send OTP</button>
+    </form>
+
+    <!-- OTP Verification Form (Hidden initially) -->
+    <form id="otpForm" class="login-form" style="display: none;">
+      <div class="otp-header">
+        <h3>📧 Email Verification</h3>
+        <p>We've sent a 6-digit OTP to <span id="userEmail"></span></p>
+        <p>Please check your email and enter the OTP below:</p>
+      </div>
+
+      <div class="form-group">
+        <label for="otpCode" class="required">OTP Code</label>
+        <input type="text" id="otpCode" name="otp_code" class="form-input otp-input" placeholder="Enter 6-digit OTP" maxlength="6" required>
+        <div class="form-help">OTP expires in 10 minutes</div>
+      </div>
+
+      <button type="submit" class="login-btn">✅ Verify & Complete Registration</button>
+      <button type="button" id="resendOtpBtn" class="secondary-btn">🔄 Resend OTP</button>
+    </form>
+
+    <div class="register-link">
+      <p>Already have an account? <a href="login/login.html">Login here</a></p>
+    </div>
+
+    <div class="back-link">
+      <p><a href="index.html">← Back to Home</a></p>
+    </div>
+  </div>
+
+  <!-- API Client -->
+  <script src="js/utils.js"></script>
+  <script src="js/api-client.js"></script>
+  <script src="js/form-validation.js"></script>
+  <script src="register.js"></script>
+</body>
+
+</html>
+

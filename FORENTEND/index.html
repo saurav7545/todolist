@@ -9,11 +9,12 @@
 </head>
 
 <body>
-  <!-- Logout Button -->
-  <div class="logout-section">
+  <!-- User Actions -->
+  <div class="user-actions">
     <button id="logout-btn" class="logout-btn" onclick="logout()">
       🚪 Logout
     </button>
+    <a href="register.html" class="register-btn">📝 Register</a>
   </div>
 
   <div class="container">
@@ -188,7 +189,11 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- API Client and Utilities -->
+  <script src="js/utils.js"></script>
+  <script src="js/api-client.js"></script>
+  <script src="js/form-validation.js"></script>
+  <script src="script-api.js"></script>
   <script>
     // Error handling for debugging
     window.addEventListener('error', function (e) {

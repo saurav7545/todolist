@@ -1,0 +1,41 @@
+{
+  "name": "study-tracker-frontend",
+  "version": "1.0.0",
+  "description": "Study Tracker - A comprehensive study tracking and personal productivity application",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 3000",
+    "dev": "python -m http.server 3000",
+    "build": "echo 'No build process needed for static HTML'",
+    "test": "echo 'No tests specified'",
+    "lint": "echo 'No linting configured'"
+  },
+  "keywords": [
+    "study-tracker",
+    "productivity",
+    "task-management",
+    "notes",
+    "diary",
+    "education",
+    "learning",
+    "javascript",
+    "html",
+    "css"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/study-tracker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/study-tracker/issues"
+  },
+  "homepage": "https://your-app-name.netlify.app",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}
+

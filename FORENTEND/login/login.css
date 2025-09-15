@@ -274,3 +274,54 @@
     transform: rotate(360deg);
   }
 }
+
+/* OTP Form Styling */
+.otp-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.otp-header h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.otp-header p {
+  color: #666;
+  margin: 5px 0;
+}
+
+.otp-input {
+  text-align: center;
+  font-size: 1.2rem;
+  letter-spacing: 0.5rem;
+  font-weight: bold;
+}
+
+.secondary-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 5px;
+  transition: background-color 0.3s;
+}
+
+.secondary-btn:hover {
+  background: #5a6268;
+}
+
+.otp-timer {
+  text-align: center;
+  color: #dc3545;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+/* Form transitions */
+.login-form {
+  transition: all 0.3s ease;
+}
