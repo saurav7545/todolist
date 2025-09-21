@@ -1,357 +1,428 @@
 /**
- * API Client for Study Tracker Backend
- * Handles all communication with the FastAPI backend
+ * Local Storage Client for Study Tracker Frontend
+ * Handles all data storage using localStorage (no backend required)
  */
 
-class APIClient {
+class LocalStorageClient {
     constructor() {
-        this.baseURL = 'http://localhost:8000/api';
-        this.token = localStorage.getItem('access_token');
-        this.refreshToken = localStorage.getItem('refresh_token');
+        this.storageKey = 'study_tracker_data';
+        this.initializeData();
     }
 
     /**
-     * Set authentication token
+     * Initialize default data structure
      */
-    setToken(token, refreshToken = null) {
-        this.token = token;
-        if (refreshToken) {
-            this.refreshToken = refreshToken;
-        }
-        localStorage.setItem('access_token', token);
-        if (refreshToken) {
-            localStorage.setItem('refresh_token', refreshToken);
-        }
-    }
-
-    /**
-     * Clear authentication tokens
-     */
-    clearTokens() {
-        this.token = null;
-        this.refreshToken = null;
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('user_info');
-    }
-
-    /**
-     * Get headers for API requests
-     */
-    getHeaders(includeAuth = true) {
-        const headers = {
-            'Content-Type': 'application/json',
-        };
-
-        if (includeAuth && this.token) {
-            headers['Authorization'] = `Bearer ${this.token}`;
-        }
-
-        return headers;
-    }
-
-    /**
-     * Make HTTP request
-     */
-    async request(endpoint, options = {}) {
-        const url = `${this.baseURL}${endpoint}`;
-        const config = {
-            headers: this.getHeaders(options.includeAuth !== false),
-            ...options
-        };
-
-        try {
-            const response = await fetch(url, config);
-            
-            // Handle token refresh if needed
-            if (response.status === 401 && this.refreshToken) {
-                const refreshed = await this.refreshAccessToken();
-                if (refreshed) {
-                    // Retry the original request with new token
-                    config.headers = this.getHeaders();
-                    const retryResponse = await fetch(url, config);
-                    return await this.handleResponse(retryResponse);
-                }
-            }
-
-            return await this.handleResponse(response);
-        } catch (error) {
-            console.error('API Request failed:', error);
-            throw new Error(`Network error: ${error.message}`);
+    initializeData() {
+        if (!localStorage.getItem(this.storageKey)) {
+            const defaultData = {
+                users: [
+                    {
+                        id: '1',
+                        username: 'demo',
+                        email: 'demo@studytracker.com',
+                        password: '123456', // In real app, this would be hashed
+                        first_name: 'Demo',
+                        last_name: 'User',
+                        role: 'user',
+                        is_active: true,
+                        created_at: new Date().toISOString()
+                    }
+                ],
+                tasks: [],
+                notes: [],
+                diary: [],
+                feedback: [],
+                notices: [
+                    {
+                        id: '1',
+                        title: 'Welcome to Study Tracker!',
+                        content: 'This is a standalone version of Study Tracker that works without a backend. All your data is stored locally in your browser.',
+                        is_active: true,
+                        priority: 'high',
+                        created_at: new Date().toISOString()
+                    }
+                ],
+                currentUser: null
+            };
+            localStorage.setItem(this.storageKey, JSON.stringify(defaultData));
         }
     }
 
     /**
-     * Handle API response
+     * Get all data
      */
-    async handleResponse(response) {
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.detail || `HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-            return await response.json();
-        }
-        return await response.text();
+    getData() {
+        return JSON.parse(localStorage.getItem(this.storageKey) || '{}');
     }
 
     /**
-     * Refresh access token
+     * Save all data
      */
-    async refreshAccessToken() {
-        if (!this.refreshToken) {
-            return false;
-        }
-
-        try {
-            const response = await fetch(`${this.baseURL}/auth/refresh`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ refresh_token: this.refreshToken })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                this.setToken(data.access_token, data.refresh_token);
-                return true;
-            }
-        } catch (error) {
-            console.error('Token refresh failed:', error);
-        }
-
-        // If refresh fails, clear tokens and redirect to login
-        this.clearTokens();
-        window.location.href = '/login/login.html';
-        return false;
+    saveData(data) {
+        localStorage.setItem(this.storageKey, JSON.stringify(data));
     }
 
-    // Authentication endpoints
+    /**
+     * Generate unique ID
+     */
+    generateId() {
+        return Date.now().toString() + Math.random().toString(36).substr(2, 9);
+    }
+
+    // Authentication methods
     async login(username, password) {
-        const response = await this.request('/auth/login', {
-            method: 'POST',
-            body: JSON.stringify({ username, password }),
-            includeAuth: false
-        });
+        const data = this.getData();
+        const user = data.users.find(u => 
+            (u.username === username || u.email === username) && 
+            u.password === password
+        );
         
-        this.setToken(response.access_token, response.refresh_token);
-        return response;
+        if (user) {
+            data.currentUser = user;
+            this.saveData(data);
+            return {
+                success: true,
+                user: user,
+                message: 'Login successful'
+            };
+        } else {
+            throw new Error('Invalid credentials');
+        }
     }
 
     async register(userData) {
-        return await this.request('/auth/register', {
-            method: 'POST',
-            body: JSON.stringify(userData),
-            includeAuth: false
-        });
+        const data = this.getData();
+        
+        // Check if user already exists
+        const existingUser = data.users.find(u => 
+            u.username === userData.username || u.email === userData.email
+        );
+        
+        if (existingUser) {
+            throw new Error('User already exists with this username or email');
+        }
+        
+        // Generate OTP for verification
+        const otpCode = this.generateOTP();
+        const otpExpiry = Date.now() + (10 * 60 * 1000); // 10 minutes
+        
+        // Store pending registration
+        if (!data.pendingRegistrations) {
+            data.pendingRegistrations = [];
+        }
+        
+        const pendingRegistration = {
+            id: this.generateId(),
+            ...userData,
+            otp_code: otpCode,
+            otp_expiry: otpExpiry,
+            created_at: new Date().toISOString()
+        };
+        
+        data.pendingRegistrations.push(pendingRegistration);
+        this.saveData(data);
+        
+        // In a real app, you would send OTP via email
+        // For demo purposes, we'll show it in console and alert
+        console.log(`OTP for ${userData.email}: ${otpCode}`);
+        alert(`Demo OTP for ${userData.email}: ${otpCode}\n\n(In production, this would be sent via email)`);
+        
+        return {
+            success: true,
+            message: 'Registration successful! Please check your email for OTP verification.',
+            data: {
+                email: userData.email,
+                expires_in: 600 // 10 minutes
+            }
+        };
     }
 
-    async getCurrentUser() {
-        return await this.request('/auth/me');
+    async verifyOTP(email, otpCode) {
+        const data = this.getData();
+        
+        if (!data.pendingRegistrations) {
+            throw new Error('No pending registration found');
+        }
+        
+        const pendingRegistration = data.pendingRegistrations.find(pr => 
+            pr.email === email && 
+            pr.otp_code === otpCode &&
+            pr.otp_expiry > Date.now()
+        );
+        
+        if (!pendingRegistration) {
+            throw new Error('Invalid or expired OTP');
+        }
+        
+        // Create user account
+        const user = {
+            id: this.generateId(),
+            username: pendingRegistration.username,
+            email: pendingRegistration.email,
+            password: pendingRegistration.password, // In real app, this would be hashed
+            first_name: pendingRegistration.first_name,
+            last_name: pendingRegistration.last_name,
+            role: 'user',
+            is_active: true,
+            is_email_verified: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            preferences: {
+                theme: 'light',
+                notifications: true,
+                language: 'en'
+            },
+            study_stats: {
+                total_tasks: 0,
+                completed_tasks: 0,
+                total_study_time: 0,
+                streak_days: 0
+            }
+        };
+        
+        // Add user to users array
+        data.users.push(user);
+        
+        // Remove pending registration
+        data.pendingRegistrations = data.pendingRegistrations.filter(pr => pr.id !== pendingRegistration.id);
+        
+        this.saveData(data);
+        
+        return {
+            success: true,
+            message: 'Email verified successfully! You can now login.',
+            data: { email: email }
+        };
+    }
+
+    async requestLoginOTP(email) {
+        const data = this.getData();
+        const user = data.users.find(u => u.email === email);
+        
+        if (!user) {
+            throw new Error('User not found');
+        }
+        
+        // Generate OTP
+        const otpCode = this.generateOTP();
+        const otpExpiry = Date.now() + (10 * 60 * 1000); // 10 minutes
+        
+        // Store OTP for login
+        if (!data.loginOTPs) {
+            data.loginOTPs = [];
+        }
+        
+        const loginOTP = {
+            email: email,
+            otp_code: otpCode,
+            otp_expiry: otpExpiry,
+            created_at: new Date().toISOString()
+        };
+        
+        data.loginOTPs.push(loginOTP);
+        this.saveData(data);
+        
+        // In a real app, you would send OTP via email
+        console.log(`Login OTP for ${email}: ${otpCode}`);
+        alert(`Demo Login OTP for ${email}: ${otpCode}\n\n(In production, this would be sent via email)`);
+        
+        return {
+            message: 'OTP sent to your email',
+            expires_in: 600, // 10 minutes
+            email: email
+        };
     }
 
     async logout() {
-        try {
-            await this.request('/auth/logout', { method: 'POST' });
-        } finally {
-            this.clearTokens();
-        }
+        const data = this.getData();
+        data.currentUser = null;
+        this.saveData(data);
+        return { success: true, message: 'Logged out successfully' };
     }
 
-    // Task endpoints
-    async getTasks(params = {}) {
-        const queryString = new URLSearchParams(params).toString();
-        return await this.request(`/tasks?${queryString}`);
+    async getCurrentUser() {
+        const data = this.getData();
+        return data.currentUser;
     }
 
-    async getTask(taskId) {
-        return await this.request(`/tasks/${taskId}`);
+    /**
+     * Generate 6-digit OTP
+     */
+    generateOTP() {
+        return Math.floor(100000 + Math.random() * 900000).toString();
+    }
+
+    // Task methods
+    async getTasks() {
+        const data = this.getData();
+        return data.tasks.filter(task => task.user_id === data.currentUser?.id);
     }
 
     async createTask(taskData) {
-        return await this.request('/tasks', {
-            method: 'POST',
-            body: JSON.stringify(taskData)
-        });
+        const data = this.getData();
+        const task = {
+            id: this.generateId(),
+            user_id: data.currentUser.id,
+            ...taskData,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        };
+        data.tasks.push(task);
+        this.saveData(data);
+        return task;
     }
 
     async updateTask(taskId, taskData) {
-        return await this.request(`/tasks/${taskId}`, {
-            method: 'PUT',
-            body: JSON.stringify(taskData)
-        });
+        const data = this.getData();
+        const taskIndex = data.tasks.findIndex(t => t.id === taskId);
+        if (taskIndex !== -1) {
+            data.tasks[taskIndex] = {
+                ...data.tasks[taskIndex],
+                ...taskData,
+                updated_at: new Date().toISOString()
+            };
+            this.saveData(data);
+            return data.tasks[taskIndex];
+        }
+        throw new Error('Task not found');
     }
 
     async deleteTask(taskId) {
-        return await this.request(`/tasks/${taskId}`, {
-            method: 'DELETE'
-        });
+        const data = this.getData();
+        data.tasks = data.tasks.filter(t => t.id !== taskId);
+        this.saveData(data);
+        return { success: true };
     }
 
-    async startTaskSession(taskId) {
-        return await this.request(`/tasks/${taskId}/start`, {
-            method: 'POST'
-        });
-    }
-
-    async completeTask(taskId) {
-        return await this.request(`/tasks/${taskId}/complete`, {
-            method: 'POST'
-        });
-    }
-
-    async getTaskStats() {
-        return await this.request('/tasks/stats');
-    }
-
-    // Notes endpoints
-    async getNotes(params = {}) {
-        const queryString = new URLSearchParams(params).toString();
-        return await this.request(`/notes?${queryString}`);
+    // Notes methods
+    async getNotes() {
+        const data = this.getData();
+        return data.notes.filter(note => note.user_id === data.currentUser?.id);
     }
 
     async createNote(noteData) {
-        return await this.request('/notes', {
-            method: 'POST',
-            body: JSON.stringify(noteData)
-        });
+        const data = this.getData();
+        const note = {
+            id: this.generateId(),
+            user_id: data.currentUser.id,
+            ...noteData,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        };
+        data.notes.push(note);
+        this.saveData(data);
+        return note;
     }
 
     async updateNote(noteId, noteData) {
-        return await this.request(`/notes/${noteId}`, {
-            method: 'PUT',
-            body: JSON.stringify(noteData)
-        });
+        const data = this.getData();
+        const noteIndex = data.notes.findIndex(n => n.id === noteId);
+        if (noteIndex !== -1) {
+            data.notes[noteIndex] = {
+                ...data.notes[noteIndex],
+                ...noteData,
+                updated_at: new Date().toISOString()
+            };
+            this.saveData(data);
+            return data.notes[noteIndex];
+        }
+        throw new Error('Note not found');
     }
 
     async deleteNote(noteId) {
-        return await this.request(`/notes/${noteId}`, {
-            method: 'DELETE'
-        });
+        const data = this.getData();
+        data.notes = data.notes.filter(n => n.id !== noteId);
+        this.saveData(data);
+        return { success: true };
     }
 
-    // Diary endpoints
-    async getDiaryEntries(params = {}) {
-        const queryString = new URLSearchParams(params).toString();
-        return await this.request(`/diary?${queryString}`);
+    // Diary methods
+    async getDiaryEntries() {
+        const data = this.getData();
+        return data.diary.filter(entry => entry.user_id === data.currentUser?.id);
     }
 
     async createDiaryEntry(entryData) {
-        return await this.request('/diary', {
-            method: 'POST',
-            body: JSON.stringify(entryData)
-        });
+        const data = this.getData();
+        const entry = {
+            id: this.generateId(),
+            user_id: data.currentUser.id,
+            ...entryData,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        };
+        data.diary.push(entry);
+        this.saveData(data);
+        return entry;
     }
 
     async updateDiaryEntry(entryId, entryData) {
-        return await this.request(`/diary/${entryId}`, {
-            method: 'PUT',
-            body: JSON.stringify(entryData)
-        });
+        const data = this.getData();
+        const entryIndex = data.diary.findIndex(e => e.id === entryId);
+        if (entryIndex !== -1) {
+            data.diary[entryIndex] = {
+                ...data.diary[entryIndex],
+                ...entryData,
+                updated_at: new Date().toISOString()
+            };
+            this.saveData(data);
+            return data.diary[entryIndex];
+        }
+        throw new Error('Diary entry not found');
     }
 
     async deleteDiaryEntry(entryId) {
-        return await this.request(`/diary/${entryId}`, {
-            method: 'DELETE'
-        });
+        const data = this.getData();
+        data.diary = data.diary.filter(e => e.id !== entryId);
+        this.saveData(data);
+        return { success: true };
     }
 
-    // Feedback endpoints
-    async getFeedback(params = {}) {
-        const queryString = new URLSearchParams(params).toString();
-        return await this.request(`/feedback?${queryString}`);
+    // Feedback methods
+    async getFeedback() {
+        const data = this.getData();
+        return data.feedback;
     }
 
     async createFeedback(feedbackData) {
-        return await this.request('/feedback', {
-            method: 'POST',
-            body: JSON.stringify(feedbackData)
-        });
+        const data = this.getData();
+        const feedback = {
+            id: this.generateId(),
+            user_id: data.currentUser?.id,
+            ...feedbackData,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        };
+        data.feedback.push(feedback);
+        this.saveData(data);
+        return feedback;
     }
 
-    async updateFeedback(feedbackId, feedbackData) {
-        return await this.request(`/feedback/${feedbackId}`, {
-            method: 'PUT',
-            body: JSON.stringify(feedbackData)
-        });
+    // Notices methods
+    async getNotices() {
+        const data = this.getData();
+        return data.notices.filter(notice => notice.is_active);
     }
 
-    async deleteFeedback(feedbackId) {
-        return await this.request(`/feedback/${feedbackId}`, {
-            method: 'DELETE'
-        });
-    }
-
-    // Notices endpoints
-    async getNotices(params = {}) {
-        const queryString = new URLSearchParams(params).toString();
-        return await this.request(`/notices?${queryString}`);
-    }
-
-    async getNotice(noticeId) {
-        return await this.request(`/notices/${noticeId}`);
-    }
-
-    // Admin endpoints
+    // Admin methods (simplified for demo)
     async adminLogin(username, password, email) {
-        return await this.request('/admin/login', {
-            method: 'POST',
-            body: JSON.stringify({ username, password, email }),
-            includeAuth: false
-        });
-    }
-
-    async verifyOTP(otp) {
-        return await this.request('/admin/verify-otp', {
-            method: 'POST',
-            body: JSON.stringify({ otp })
-        });
-    }
-
-    async getAdminNotices(params = {}) {
-        const queryString = new URLSearchParams(params).toString();
-        return await this.request(`/admin/notices?${queryString}`);
-    }
-
-    async createAdminNotice(noticeData) {
-        return await this.request('/admin/notices', {
-            method: 'POST',
-            body: JSON.stringify(noticeData)
-        });
-    }
-
-    async updateAdminNotice(noticeId, noticeData) {
-        return await this.request(`/admin/notices/${noticeId}`, {
-            method: 'PUT',
-            body: JSON.stringify(noticeData)
-        });
-    }
-
-    async deleteAdminNotice(noticeId) {
-        return await this.request(`/admin/notices/${noticeId}`, {
-            method: 'DELETE'
-        });
-    }
-
-    async getAdminFeedback(params = {}) {
-        const queryString = new URLSearchParams(params).toString();
-        return await this.request(`/admin/feedback?${queryString}`);
-    }
-
-    async replyToFeedback(feedbackId, reply) {
-        return await this.request(`/admin/feedback/${feedbackId}/reply`, {
-            method: 'POST',
-            body: JSON.stringify({ reply })
-        });
+        if (username === 'admin' && password === 'admin123' && email === 'admin@studytracker.com') {
+            return { success: true, message: 'Admin login successful' };
+        }
+        throw new Error('Invalid admin credentials');
     }
 
     async getAdminStats() {
-        return await this.request('/admin/stats');
+        const data = this.getData();
+        return {
+            total_users: data.users.length,
+            total_tasks: data.tasks.length,
+            total_notes: data.notes.length,
+            total_diary_entries: data.diary.length,
+            total_feedback: data.feedback.length
+        };
     }
 }
 
-// Create global API client instance
-window.apiClient = new APIClient();
+// Create global client instance
+window.apiClient = new LocalStorageClient();

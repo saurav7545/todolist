@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Registration & OTP</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { color: green; }
+        .error { color: red; }
+        button { padding: 10px 15px; margin: 5px; }
+        input { padding: 8px; margin: 5px; width: 200px; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Registration & OTP Test</h1>
+    
+    <div class="test-section">
+        <h3>Test Registration</h3>
+        <input type="text" id="testUsername" placeholder="Username" value="testuser">
+        <input type="email" id="testEmail" placeholder="Email" value="test@example.com">
+        <input type="text" id="testFirstName" placeholder="First Name" value="Test">
+        <input type="text" id="testLastName" placeholder="Last Name" value="User">
+        <input type="password" id="testPassword" placeholder="Password" value="password123">
+        <br>
+        <button onclick="testRegistration()">Test Registration</button>
+        <div id="registrationResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test OTP Verification</h3>
+        <input type="text" id="testOTP" placeholder="Enter OTP">
+        <button onclick="testOTPVerification()">Verify OTP</button>
+        <div id="otpResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test Login</h3>
+        <input type="text" id="loginUsername" placeholder="Username" value="testuser">
+        <input type="password" id="loginPassword" placeholder="Password" value="password123">
+        <button onclick="testLogin()">Test Login</button>
+        <div id="loginResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Clear Data</h3>
+        <button onclick="clearAllData()">Clear All Data</button>
+        <div id="clearResult"></div>
+    </div>
+
+    <script src="js/api-client.js"></script>
+    <script>
+        let testEmail = 'test@example.com';
+
+        async function testRegistration() {
+            try {
+                const userData = {
+                    username: document.getElementById('testUsername').value,
+                    email: document.getElementById('testEmail').value,
+                    first_name: document.getElementById('testFirstName').value,
+                    last_name: document.getElementById('testLastName').value,
+                    password: document.getElementById('testPassword').value
+                };
+
+                testEmail = userData.email;
+                
+                const result = await apiClient.register(userData);
+                document.getElementById('registrationResult').innerHTML = 
+                    `<div class="success">✅ Registration successful! Check console/alert for OTP</div>`;
+                
+                console.log('Registration result:', result);
+            } catch (error) {
+                document.getElementById('registrationResult').innerHTML = 
+                    `<div class="error">❌ Registration failed: ${error.message}</div>`;
+                console.error('Registration error:', error);
+            }
+        }
+
+        async function testOTPVerification() {
+            try {
+                const otpCode = document.getElementById('testOTP').value;
+                
+                if (!otpCode) {
+                    throw new Error('Please enter OTP code');
+                }
+
+                const result = await apiClient.verifyOTP(testEmail, otpCode);
+                document.getElementById('otpResult').innerHTML = 
+                    `<div class="success">✅ OTP verification successful!</div>`;
+                
+                console.log('OTP verification result:', result);
+            } catch (error) {
+                document.getElementById('otpResult').innerHTML = 
+                    `<div class="error">❌ OTP verification failed: ${error.message}</div>`;
+                console.error('OTP verification error:', error);
+            }
+        }
+
+        async function testLogin() {
+            try {
+                const username = document.getElementById('loginUsername').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                const result = await apiClient.login(username, password);
+                document.getElementById('loginResult').innerHTML = 
+                    `<div class="success">✅ Login successful! User: ${result.user.username}</div>`;
+                
+                console.log('Login result:', result);
+            } catch (error) {
+                document.getElementById('loginResult').innerHTML = 
+                    `<div class="error">❌ Login failed: ${error.message}</div>`;
+                console.error('Login error:', error);
+            }
+        }
+
+        function clearAllData() {
+            localStorage.clear();
+            document.getElementById('clearResult').innerHTML = 
+                `<div class="success">✅ All data cleared!</div>`;
+            console.log('All data cleared');
+        }
+
+        // Auto-fill OTP from console if available
+        window.addEventListener('load', function() {
+            console.log('Test page loaded. Check console for OTP codes when testing registration.');
+        });
+    </script>
+</body>
+</html>

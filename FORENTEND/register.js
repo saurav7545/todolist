@@ -104,10 +104,7 @@ async function handleRegistration(data) {
         };
         
         // Send registration request
-        const response = await apiClient.request('/auth/register', {
-            method: 'POST',
-            body: JSON.stringify(registrationData)
-        });
+        const response = await apiClient.register(registrationData);
         
         // Show OTP form
         showOTPForm(data.email);
@@ -115,7 +112,7 @@ async function handleRegistration(data) {
         // Start OTP timer
         startOTPTimer(response.data.expires_in);
         
-        Utils.showSuccess('Registration successful! Please check your email for OTP verification.');
+        Utils.showSuccess(response.message);
         
     } catch (error) {
         console.error('Registration error:', error);
@@ -140,16 +137,15 @@ async function handleOTPVerification(data) {
         submitBtn.disabled = true;
         
         // Verify OTP
-        const response = await apiClient.request('/auth/verify-otp', {
-            method: 'POST',
-            body: JSON.stringify({
-                email: registrationData.email,
-                otp_code: data.otp_code
-            })
-        });
+        const response = await apiClient.verifyOTP(registrationData.email, data.otp_code);
         
         // Complete registration
-        await completeRegistration();
+        Utils.showSuccess(response.message);
+        
+        // Redirect to login after 2 seconds
+        setTimeout(() => {
+            window.location.href = 'login/login.html';
+        }, 2000);
         
     } catch (error) {
         console.error('OTP verification error:', error);
@@ -159,39 +155,6 @@ async function handleOTPVerification(data) {
         const submitBtn = document.querySelector('#otpForm button[type="submit"]');
         submitBtn.textContent = '✅ Verify & Complete Registration';
         submitBtn.disabled = false;
-    }
-}
-
-/**
- * Complete user registration
- */
-async function completeRegistration() {
-    try {
-        // Create user in database
-        const userData = {
-            username: registrationData.username,
-            email: registrationData.email,
-            password_hash: await hashPassword(registrationData.password),
-            first_name: registrationData.first_name,
-            last_name: registrationData.last_name,
-            is_active: true,
-            is_email_verified: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-        };
-        
-        // In a real implementation, you would send this to your backend
-        // For now, we'll simulate success
-        Utils.showSuccess('Registration completed successfully! Redirecting to login...');
-        
-        // Redirect to login after 2 seconds
-        setTimeout(() => {
-            window.location.href = 'login/login.html';
-        }, 2000);
-        
-    } catch (error) {
-        console.error('Complete registration error:', error);
-        Utils.showError('Failed to complete registration. Please try again.');
     }
 }
 
@@ -207,18 +170,12 @@ async function resendOTP() {
         resendBtn.disabled = true;
         
         // Request new OTP
-        const response = await apiClient.request('/auth/request-login-otp', {
-            method: 'POST',
-            body: JSON.stringify({
-                email: registrationData.email,
-                otp_type: 'registration'
-            })
-        });
+        const response = await apiClient.requestLoginOTP(registrationData.email);
         
         // Restart timer
         startOTPTimer(response.expires_in);
         
-        Utils.showSuccess('New OTP sent to your email!');
+        Utils.showSuccess(response.message);
         
     } catch (error) {
         console.error('Resend OTP error:', error);
@@ -283,15 +240,6 @@ function updateOTPTimer() {
         clearInterval(otpTimer);
         Utils.showWarning('OTP expired. Please request a new one.');
     }
-}
-
-/**
- * Hash password (client-side simulation)
- * In a real implementation, this would be done on the server
- */
-async function hashPassword(password) {
-    // This is just a simulation - in reality, password hashing should be done on the server
-    return btoa(password); // Base64 encoding (NOT secure for production)
 }
 
 /**
