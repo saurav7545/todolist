@@ -233,11 +233,44 @@ class LocalStorageClient {
         };
     }
 
-    async logout() {
+    async loginWithOTP(email, password, otpCode) {
         const data = this.getData();
-        data.currentUser = null;
+        
+        // First verify the OTP
+        if (!data.loginOTPs) {
+            throw new Error('No OTP found');
+        }
+        
+        const loginOTP = data.loginOTPs.find(otp => 
+            otp.email === email && 
+            otp.otp_code === otpCode &&
+            otp.otp_expiry > Date.now()
+        );
+        
+        if (!loginOTP) {
+            throw new Error('Invalid or expired OTP');
+        }
+        
+        // Find user and verify password
+        const user = data.users.find(u => u.email === email && u.password === password);
+        
+        if (!user) {
+            throw new Error('Invalid credentials');
+        }
+        
+        // Set current user
+        data.currentUser = user;
+        
+        // Remove used OTP
+        data.loginOTPs = data.loginOTPs.filter(otp => otp.email !== email);
+        
         this.saveData(data);
-        return { success: true, message: 'Logged out successfully' };
+        
+        return {
+            success: true,
+            user: user,
+            message: 'Login successful'
+        };
     }
 
     async getCurrentUser() {

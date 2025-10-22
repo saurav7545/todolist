@@ -1,8 +1,12 @@
 # Deployment Guide
 
-This guide covers deployment instructions for both Heroku (backend) and Netlify (frontend).
+This guide covers deployment instructions for the Study Tracker frontend application.
 
 ## Frontend Deployment (Netlify)
+
+This is a standalone frontend application that works entirely in the browser using localStorage for data storage. No backend server is required.
+
+### Deployment Steps
 
 1. Push your code to GitHub
 2. Log in to Netlify
@@ -11,46 +15,30 @@ This guide covers deployment instructions for both Heroku (backend) and Netlify 
 5. Configure build settings:
    - Build command: None (static site)
    - Publish directory: `FORENTEND`
-6. Set environment variables:
-   - `API_URL`: Your backend API URL
+6. Deploy!
 
-## Backend Deployment (Heroku)
+### Features
 
-1. Make sure you have the Heroku CLI installed
-2. Log in to Heroku:
-   ```bash
-   heroku login
-   ```
-3. Create a new Heroku app:
-   ```bash
-   heroku create your-app-name
-   ```
-4. Set up environment variables:
-   ```bash
-   heroku config:set MONGODB_URL=your_mongodb_url
-   heroku config:set JWT_SECRET=your_jwt_secret
-   heroku config:set EMAIL_USERNAME=your_email
-   heroku config:set EMAIL_PASSWORD=your_email_password
-   ```
-5. Deploy your code:
-   ```bash
-   git subtree push --prefix python-backend heroku main
-   ```
+- **Standalone Operation**: No backend server required
+- **Local Storage**: All data is stored in the user's browser
+- **Offline Capable**: Works without internet connection
+- **Demo Mode**: Includes demo user for testing
+
+### Demo Credentials
+
+- **Username**: demo
+- **Password**: 123456
+- **Email**: demo@studytracker.com
 
 ## Environment Variables
 
-Make sure to set up these environment variables in both development and production:
+No environment variables are required for this standalone frontend application.
 
-### Frontend (.env)
-```
-API_URL=http://localhost:8000 # Development
-API_URL=https://your-api.herokuapp.com # Production
-```
+## Data Storage
 
-### Backend (.env)
-```
-MONGODB_URL=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-EMAIL_USERNAME=your_email_for_sending_otps
-EMAIL_PASSWORD=your_email_app_password
-```
+All user data, tasks, notes, and diary entries are stored locally in the browser's localStorage. This means:
+
+- Data persists between browser sessions
+- Data is private to each user's browser
+- No server-side data storage required
+- Users can export/import their data if needed

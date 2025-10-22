@@ -557,34 +557,40 @@ function updateTaskStats() {
 }
 
 // Check if user is logged in
-if (localStorage.getItem('isLoggedIn') !== 'true') {
-  console.log("User not logged in, redirecting to login page");
-  // Temporarily bypass login for testing - remove this in production
-  console.log("Temporarily bypassing login for testing");
-  localStorage.setItem('isLoggedIn', 'true');
-  localStorage.setItem('currentUser', 'demo');
-  // window.location.href = 'login/login.html';
-} else {
-  console.log("User is logged in, proceeding with application");
-}
+document.addEventListener('DOMContentLoaded', async function() {
+  try {
+    const currentUser = await apiClient.getCurrentUser();
+    if (!currentUser) {
+      console.log("User not logged in, redirecting to login page");
+      window.location.href = 'login/login.html';
+      return;
+    }
+    console.log("User is logged in:", currentUser.username);
+  } catch (error) {
+    console.error("Error checking authentication:", error);
+    window.location.href = 'login/login.html';
+  }
+});
 
 // Logout function
-function logout() {
+async function logout() {
   console.log("Logout function called");
-  alert("Logout function is working!");
 
   if (confirm('Are you sure you want to logout?')) {
     console.log("User confirmed logout");
-    // Clear all localStorage data
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('notes');
-    localStorage.removeItem('diaryEntries');
-    console.log("LocalStorage cleared");
-
-    // Redirect to login page
-    console.log("Redirecting to login page");
-    window.location.href = 'login/login.html';
+    
+    try {
+      await apiClient.logout();
+      console.log("Logout successful");
+      
+      // Redirect to login page
+      window.location.href = 'login/login.html';
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Clear localStorage manually as fallback
+      localStorage.clear();
+      window.location.href = 'login/login.html';
+    }
   } else {
     console.log("User cancelled logout");
   }

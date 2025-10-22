@@ -231,15 +231,20 @@ class Utils {
     /**
      * Check if user is authenticated
      */
-    static isAuthenticated() {
-        return localStorage.getItem('access_token') !== null;
+    static async isAuthenticated() {
+        try {
+            const currentUser = await apiClient.getCurrentUser();
+            return currentUser !== null;
+        } catch (error) {
+            return false;
+        }
     }
 
     /**
      * Redirect to login if not authenticated
      */
-    static requireAuth() {
-        if (!this.isAuthenticated()) {
+    static async requireAuth() {
+        if (!(await this.isAuthenticated())) {
             window.location.href = '/login/login.html';
             return false;
         }

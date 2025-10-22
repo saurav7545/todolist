@@ -1,7 +1,11 @@
 // Check if user is already logged in
-if (localStorage.getItem('access_token')) {
-  window.location.href = '../index.html';
-}
+document.addEventListener('DOMContentLoaded', async function() {
+    const currentUser = await apiClient.getCurrentUser();
+    if (currentUser) {
+        window.location.href = '../index.html';
+        return;
+    }
+});
 
 // Global variables
 let loginData = null;
@@ -10,21 +14,20 @@ let otpExpiryTime = null;
 
 // Initialize form validation
 document.addEventListener('DOMContentLoaded', function() {
-    // Set up form validation
-    const loginValidator = FormValidationUtils.getValidator('login');
-    const otpValidator = new FormValidator();
+    console.log('DOM loaded, initializing login...');
     
-    // Add OTP validation rule
-    otpValidator.addRule('otp_code', ValidationRules.required, 'OTP code is required');
-    otpValidator.addRule('otp_code', (value) => /^\d{6}$/.test(value), 'OTP must be 6 digits');
+    // Check if required elements exist
+    const loginForm = document.getElementById('loginForm');
+    const otpForm = document.getElementById('otpForm');
     
-    // Enable real-time validation
-    loginValidator.enableRealTimeValidation(document.getElementById('loginForm'));
-    otpValidator.enableRealTimeValidation(document.getElementById('otpForm'));
+    console.log('Login form found:', !!loginForm);
+    console.log('OTP form found:', !!otpForm);
     
     // Set up form handlers
     setupLoginForm();
     setupOTPForm();
+    
+    console.log('Login initialization complete');
 });
 
 /**
@@ -33,20 +36,21 @@ document.addEventListener('DOMContentLoaded', function() {
 function setupLoginForm() {
     const form = document.getElementById('loginForm');
     
+    if (!form) {
+        console.error('Login form not found');
+        return;
+    }
+    
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
+        console.log('Form submitted');
         
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
+        console.log('Form data:', data);
         
-        // Validate form
-        const validation = FormValidationUtils.validateAndSubmit(
-            form, 
-            FormValidationUtils.getValidator('login'),
-            async (formData) => {
-                await handleLogin(formData);
-            }
-        );
+        // Direct call to handleLogin
+        await handleLogin(data);
     });
 }
 
@@ -86,6 +90,8 @@ function setupOTPForm() {
 }
 
 async function handleLogin(data) {
+  console.log('handleLogin called with:', data);
+  
   // Hide any existing messages
   hideMessages();
 
@@ -95,12 +101,34 @@ async function handleLogin(data) {
     return;
   }
 
+  // Check if apiClient is available
+  if (typeof apiClient === 'undefined') {
+    console.error('apiClient is not defined');
+    showError('Application not loaded properly. Please refresh the page.');
+    return;
+  }
+
   try {
     // Show loading state
     const submitBtn = document.querySelector('#loginForm button[type="submit"]');
     const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Requesting OTP...';
+    submitBtn.textContent = 'Logging in...';
     submitBtn.disabled = true;
+
+    console.log('Checking demo user login...');
+    
+    // Check if it's a demo user - direct login
+    if ((data.email === 'demo@studytracker.com' || data.email === 'demo') && data.password === '123456') {
+      console.log('Demo user detected, attempting login...');
+      const response = await apiClient.login(data.email, '123456');
+      console.log('Login response:', response);
+      showSuccess('Demo login successful! Redirecting...');
+      
+      setTimeout(() => {
+        window.location.href = '../index.html';
+      }, 1000);
+      return;
+    }
 
     // Store login data
     loginData = {
@@ -109,13 +137,7 @@ async function handleLogin(data) {
     };
 
     // Request OTP for login
-    const response = await apiClient.request('/auth/request-login-otp', {
-      method: 'POST',
-      body: JSON.stringify({
-        email: data.email,
-        otp_type: 'login'
-      })
-    });
+    const response = await apiClient.requestLoginOTP(data.email);
     
     // Show OTP form
     showOTPForm(data.email);
@@ -127,25 +149,14 @@ async function handleLogin(data) {
 
   } catch (error) {
     console.error('Login error:', error);
-    
-    // Check if it's a demo user fallback
-    if (data.email === 'demo@example.com' && data.password === '123456') {
-      // Fallback to demo mode if backend is not available
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('currentUser', 'demo');
-      showSuccess('Demo login successful! Redirecting...');
-      
-      setTimeout(() => {
-        window.location.href = '../index.html';
-      }, 1000);
-    } else {
-      showError(error.message || 'Login failed. Please check your credentials.');
-    }
+    showError(error.message || 'Login failed. Please check your credentials.');
   } finally {
     // Reset button state
     const submitBtn = document.querySelector('#loginForm button[type="submit"]');
-    submitBtn.textContent = '🔐 Login';
-    submitBtn.disabled = false;
+    if (submitBtn) {
+      submitBtn.textContent = '🔐 Login';
+      submitBtn.disabled = false;
+    }
   }
 }
 
@@ -161,17 +172,7 @@ async function handleOTPLogin(data) {
     submitBtn.disabled = true;
 
     // Login with OTP
-    const response = await apiClient.request('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({
-        email: loginData.email,
-        password: loginData.password,
-        otp_code: data.otp_code
-      })
-    });
-    
-    // Store tokens
-    apiClient.setToken(response.access_token, response.refresh_token);
+    const response = await apiClient.loginWithOTP(loginData.email, loginData.password, data.otp_code);
     
     showSuccess('Login successful! Redirecting...');
 
@@ -203,13 +204,7 @@ async function resendOTP() {
     resendBtn.disabled = true;
     
     // Request new OTP
-    const response = await apiClient.request('/auth/request-login-otp', {
-      method: 'POST',
-      body: JSON.stringify({
-        email: loginData.email,
-        otp_type: 'login'
-      })
-    });
+    const response = await apiClient.requestLoginOTP(loginData.email);
     
     // Restart timer
     startOTPTimer(response.expires_in);
